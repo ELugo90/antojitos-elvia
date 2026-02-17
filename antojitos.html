@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Antojitos Elvia 🥑🌮 - Sistema de Pedidos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Cantarell', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f9e3b3 0%, #ffcc80 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .app-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(6px);
+            border-radius: 48px 48px 32px 32px;
+            box-shadow: 0 20px 35px rgba(200, 80, 0, 0.4);
+            padding: 1.8rem 1.5rem;
+            border: 4px solid #ff4d6d;
+        }
+
+        /* Logo desde archivo */
+        .logo-area {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            object-fit: contain;
+            border-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Botón de administrador único */
+        .admin-access {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+        .btn-admin {
+            background: linear-gradient(145deg, #ff6b6b, #c92a2a);
+            border: 3px solid #ffd966;
+            color: white;
+            font-weight: 900;
+            font-size: 1.2rem;
+            padding: 0.7rem 2rem;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #8b1e1e, 0 0 15px rgba(255, 215, 0, 0.5);
+            transition: all 0.1s ease;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 0 #5a1e1e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-admin::before {
+            content: "⚙️";
+            font-size: 1.5rem;
+        }
+        .btn-admin:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #8b1e1e, 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        .btn-admin.cerrado::before {
+            content: "🔒";
+        }
+        .btn-admin.abierto::before {
+            content: "🔓";
+        }
+
+        /* Modal de contraseña */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .password-modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fce38d;
+            padding: 2.5rem;
+            border-radius: 60px;
+            border: 6px solid #ff4d6d;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal-content h3 {
+            color: #a40e0e;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 0 #fdbb34;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.3rem;
+            border-radius: 60px;
+            border: 4px solid #fc6d3b;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .modal-buttons button {
+            background: #ffbe0b;
+            border: none;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            border: 3px solid #9c2e2e;
+            box-shadow: 0 5px 0 #9c2e2e;
+            cursor: pointer;
+        }
+        .modal-buttons button:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #9c2e2e;
+        }
+
+        /* Panel de administración mejorado */
+        .admin-panel {
+            background: #fce38d;
+            padding: 2rem;
+            border-radius: 60px;
+            margin: 1.5rem 0;
+            border: 5px solid #ff4d6d;
+            display: none;
+        }
+        .admin-panel.show {
+            display: block;
+        }
+        .admin-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        .admin-tab {
+            background: linear-gradient(145deg, #fdbf50, #f18701);
+            border: 3px solid #a13333;
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #832727;
+            text-shadow: 2px 2px 0 #6b2b2b;
+        }
+        .admin-tab.active {
+            background: linear-gradient(145deg, #f18701, #fdbf50);
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #832727;
+        }
+        .admin-category {
+            display: none;
+        }
+        .admin-category.active {
+            display: block;
+        }
+        .admin-list {
+            background: #fff3c9;
+            padding: 1.5rem;
+            border-radius: 40px;
+            border: 3px solid #d00000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .admin-item {
+            background: white;
+            border-radius: 40px;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid #fc6d3b;
+            flex-wrap: wrap;
+        }
+        .admin-item label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .admin-item input[type="checkbox"] {
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #d62828;
+        }
+        .item-controls button {
+            background: #ffbe0b;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-weight: bold;
+            border: 2px solid #9c2e2e;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+        .admin-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+        .admin-actions button {
+            background: linear-gradient(145deg, #e36414, #b6490e);
+            color: white;
+            border: 3px solid #8b1e1e;
+            box-shadow: 0 5px 0 #8b1e1e;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-shadow: 1px 1px 0 #5a2e2e;
+        }
+        .admin-add-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            background: #ffe28c;
+            padding: 1.5rem;
+            border-radius: 40px;
+        }
+        .admin-add-form input {
+            flex: 1 1 200px;
+            padding: 0.8rem;
+            border-radius: 50px;
+            border: 3px solid #fc6d3b;
+            font-size: 1rem;
+        }
+        .admin-add-form button {
+            background: #4caf50;
+            color: white;
+            border: 3px solid #1e5f3a;
+            box-shadow: 0 5px 0 #1e5f3a;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Botones principales */
+        .btn-principal {
+            background: linear-gradient(145deg, #ffb347, #ff8c42);
+            border: none;
+            color: white;
+            font-weight: 900;
+            font-size: 1.3rem;
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            border: 3px solid #9c2e2e;
+            box-shadow: 0 8px 0 #9c2e2e, 0 0 20px #ffd966;
+            cursor: pointer;
+            text-shadow: 2px 2px 0 #a64b2a;
+            letter-spacing: 1px;
+            transition: 0.1s;
+            width: 100%;
+        }
+        .btn-principal:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #9c2e2e, 0 0 20px #ffd966;
+        }
+
+        .btn-secundario {
+            background: linear-gradient(145deg, #fcca6b, #fdae3a);
+            border: 3px solid #a43d16;
+            box-shadow: 0 6px 0 #a43d16;
+            color: #2d1f00;
+            font-weight: 800;
+            padding: 0.8rem;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .btn-secundario:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #a43d16;
+        }
+
+        /* Botón seleccionar */
+        .btn-seleccionar {
+            background: linear-gradient(145deg, #ffb347, #ff8c42);
+            border: none;
+            color: white;
+            font-weight: 900;
+            font-size: 1.2rem;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            border: 3px solid #9c2e2e;
+            box-shadow: 0 6px 0 #9c2e2e, 0 0 15px #ffd966;
+            cursor: pointer;
+            text-shadow: 2px 2px 0 #a64b2a;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-seleccionar:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #9c2e2e, 0 0 15px #ffd966;
+        }
+        .btn-seleccionar::before {
+            content: "✨";
+            font-size: 1.4rem;
+        }
+
+        /* Contenedor principal de 2 columnas */
+        .main-content {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        /* Columna izquierda: flujo de pedido - CORREGIDA CON SCROLL */
+        .flow-section {
+            flex: 2 1 500px;
+            background: #f93838e0;
+            border-radius: 50px 50px 30px 30px;
+            padding: 2rem 1.5rem;
+            border: 4px solid #fcee8f;
+            box-shadow: inset 0 -5px 0 #aa2e2e, 10px 10px 0 #30855b;
+            min-height: 500px;
+            max-height: 700px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            height: 100%;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        .screen h2 {
+            font-size: clamp(1.7rem, 5vw, 2.8rem);
+            color: #fefae0;
+            text-shadow: 4px 4px 0 #b6362b;
+            margin-bottom: 1.5rem;
+            border-bottom: 5px dashed #fdca40;
+            padding-bottom: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Contenedores con scroll interno */
+        #guisadosList, #complementosList {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 1rem;
+            max-height: 400px;
+        }
+
+        /* Scroll personalizado */
+        #guisadosList::-webkit-scrollbar, #complementosList::-webkit-scrollbar {
+            width: 8px;
+        }
+        #guisadosList::-webkit-scrollbar-thumb, #complementosList::-webkit-scrollbar-thumb {
+            background: #ff8c42;
+            border-radius: 10px;
+            border: 2px solid #fcee8f;
+        }
+
+        /* Grid de categorías */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            overflow-y: auto;
+            padding-right: 5px;
+            max-height: 400px;
+        }
+        .category-card {
+            background: white;
+            border-radius: 40px;
+            padding: 1.2rem 0.5rem;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            border: 4px solid #fe621d;
+            box-shadow: 0 7px 0 #a43d16;
+            cursor: pointer;
+            color: #b12a2a;
+            transition: 0.1s;
+        }
+        .category-card:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #a43d16;
+        }
+
+        /* Items de guisados */
+        .guisado-item {
+            background: white;
+            border-radius: 40px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border: 3px solid #c53939;
+            box-shadow: 0 5px 0 #852525;
+        }
+        .guisado-nombre {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ad2323;
+        }
+        .guisado-precio {
+            background: #1f8b1f;
+            color: white;
+            border-radius: 40px;
+            padding: 0.4rem 1.2rem;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: 2px solid #ffd966;
+        }
+        .cantidad-control {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: #ffe28c;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+        }
+        .cantidad-control button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #d64141;
+            color: white;
+            font-weight: 900;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: 2px solid #8b1e1e;
+        }
+        .cantidad-control span {
+            font-size: 1.8rem;
+            font-weight: 800;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* Items de complementos */
+        .complemento-item {
+            background: white;
+            border-radius: 40px;
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 3px solid #fc9e4c;
+        }
+        .complemento-item label {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .complemento-item input {
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #d62828;
+        }
+
+        /* Carrito */
+        .cart-section {
+            flex: 1 1 350px;
+            background: #fef3c7;
+            border-radius: 40px 40px 30px 30px;
+            padding: 1.8rem 1.5rem;
+            border: 5px solid #e34132;
+            box-shadow: inset 0 -5px 0 #9f2626, 10px 10px 0 #f8b62a;
+            align-self: start;
+        }
+        .cart-items {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #fff0cf;
+            padding: 1rem;
+            border-radius: 30px;
+            border: 3px solid #e34132;
+            margin-bottom: 1.2rem;
+        }
+        .cart-item-li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 1rem;
+            background: #faf0c3;
+            border-radius: 30px;
+            margin: 5px 0;
+            font-weight: 600;
+            border: 2px solid #d6931e;
+            flex-wrap: wrap;
+        }
+        .comentarios-box textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 30px;
+            border: 4px solid #cc6b2c;
+            font-size: 1.1rem;
+            background: #fff8e7;
+            resize: vertical;
+            margin: 0.5rem 0 1.2rem;
+        }
+        .btn-whatsapp {
+            background: linear-gradient(145deg, #25D366, #128C7E);
+            border: none;
+            color: white;
+            font-weight: 900;
+            font-size: 1.5rem;
+            padding: 1rem;
+            border-radius: 60px;
+            border: 4px solid #075e54;
+            box-shadow: 0 8px 0 #075e54;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-shadow: 2px 2px 0 #075e54;
+        }
+        .btn-whatsapp:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #075e54;
+        }
+        footer {
+            text-align: center;
+            color: #5e2e1c;
+            margin-top: 2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+    <!-- Logo desde archivo -->
+    <div class="logo-area">
+        <img src="logo.png" alt="Antojitos Elvia" class="logo-img" onerror="this.src='https://via.placeholder.com/300x120?text=Antojitos+Elvia'">
+    </div>
+
+    <!-- Botón de administrador único -->
+    <div class="admin-access">
+        <button class="btn-admin" id="adminToggleBtn"> Administrador</button>
+    </div>
+
+    <!-- Modal de contraseña -->
+    <div id="passwordModal" class="password-modal">
+        <div class="modal-content">
+            <h3>🔐 Acceso restringido</h3>
+            <input type="password" id="adminPassword" placeholder="Contraseña" value="">
+            <div class="modal-buttons">
+                <button id="submitPassword">Entrar</button>
+                <button id="cancelPassword">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de administración -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-admin-cat="productos">🌮 Productos</button>
+            <button class="admin-tab" data-admin-cat="guisados">🥘 Guisados</button>
+            <button class="admin-tab" data-admin-cat="complementos">🧅 Complementos</button>
+            <button class="admin-tab" data-admin-cat="bebidas">🥤 Bebidas</button>
+        </div>
+
+        <!-- Categorías de productos -->
+        <div id="admin-productos" class="admin-category active">
+            <h3 style="color:#a40e0e;">Categorías del menú</h3>
+            <div class="admin-list" id="productosAdminList"></div>
+            <div class="admin-actions">
+                <button id="addProductoBtn">➕ Agregar categoría</button>
+                <button id="deleteProductosBtn">🗑️ Eliminar seleccionadas</button>
+            </div>
+            <div class="admin-add-form">
+                <input type="text" id="newProductoName" placeholder="Ej: Tostada">
+                <button id="saveProductoBtn">Guardar</button>
+            </div>
+        </div>
+
+        <!-- Guisados -->
+        <div id="admin-guisados" class="admin-category">
+            <h3 style="color:#a40e0e;">Guisados</h3>
+            <div class="admin-list" id="guisadosAdminList"></div>
+            <div class="admin-actions">
+                <button id="addGuisadoBtn">➕ Agregar guisado</button>
+                <button id="deleteGuisadosBtn">🗑️ Eliminar seleccionados</button>
+            </div>
+            <div class="admin-add-form">
+                <input type="text" id="newGuisadoName" placeholder="Ej: Tinga de pollo">
+                <input type="number" id="newGuisadoPrice" placeholder="Precio">
+                <button id="saveGuisadoBtn">Guardar</button>
+            </div>
+        </div>
+
+        <!-- Complementos -->
+        <div id="admin-complementos" class="admin-category">
+            <h3 style="color:#a40e0e;">Complementos</h3>
+            <div class="admin-list" id="complementosAdminList"></div>
+            <div class="admin-actions">
+                <button id="addComplementoBtn">➕ Agregar complemento</button>
+                <button id="deleteComplementosBtn">🗑️ Eliminar seleccionados</button>
+            </div>
+            <div class="admin-add-form">
+                <input type="text" id="newComplementoName" placeholder="Ej: Queso gratinado">
+                <input type="number" id="newComplementoPrice" placeholder="Precio">
+                <button id="saveComplementoBtn">Guardar</button>
+            </div>
+        </div>
+
+        <!-- Bebidas -->
+        <div id="admin-bebidas" class="admin-category">
+            <h3 style="color:#a40e0e;">Bebidas</h3>
+            <div class="admin-list" id="bebidasAdminList"></div>
+            <div class="admin-actions">
+                <button id="addBebidaBtn">➕ Agregar bebida</button>
+                <button id="deleteBebidasBtn">🗑️ Eliminar seleccionadas</button>
+            </div>
+            <div class="admin-add-form">
+                <input type="text" id="newBebidaName" placeholder="Ej: Jarritos de fresa">
+                <input type="number" id="newBebidaPrice" placeholder="Precio">
+                <button id="saveBebidaBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="flow-section">
+            <!-- Pantalla 1: Menú -->
+            <div id="screenMenu" class="screen active">
+                <h2>🔥 ¿Qué antojito? 🔥</h2>
+                <div class="category-grid" id="categoryGrid"></div>
+            </div>
+
+            <!-- Pantalla 2: Guisados -->
+            <div id="screenGuisado" class="screen">
+                <h2 id="guisadoTitle">Elige guisado para <span id="categoriaElegida"></span></h2>
+                <div id="guisadosList"></div>
+                <button class="btn-secundario" id="backToMenuBtn">🔙 Volver al menú</button>
+            </div>
+
+            <!-- Pantalla 3: Complementos -->
+            <div id="screenComplementos" class="screen">
+                <h2>🌶️ Complementos 🌶️</h2>
+                <div id="complementosList"></div>
+                <button class="btn-principal" id="addToCartBtn">➕ Agregar al carrito</button>
+                <button class="btn-secundario" id="backToGuisadoBtn">🔙 Elegir otro guisado</button>
+            </div>
+        </div>
+
+        <!-- Carrito -->
+        <div class="cart-section">
+            <h2 style="color:#2d1f00;">🛒 Mi pedido</h2>
+            <ul id="cart-list" class="cart-items">
+                <li style="text-align:center;">Carrito vacío</li>
+            </ul>
+            <div class="comentarios-box">
+                <label for="comentarios" style="font-weight:800;">💬 Comentario:</label>
+                <textarea id="comentarios" rows="2" placeholder="Ej: Sin cebolla, extra salsa..."></textarea>
+            </div>
+            <button class="btn-whatsapp" id="enviarWhatsApp">📲 Enviar a WhatsApp</button>
+        </div>
+    </div>
+    <footer>🇲🇽 ¡Hecho con 🌶️ y ❤️ 100% mexicano! 🇲🇽</footer>
+</div>
+
+<script>
+    (function() {
+        // ========== DATOS GLOBALES ==========
+        let categoriasProductos = ['Huarache', 'Quesadilla', 'Gordita', 'Pambazo', 'Taco', 'Tostada'];
+        
+        let guisados = [
+            { nombre: "Tinga de res 🥩", precio: 25 },
+            { nombre: "Tinga de pollo 🍗", precio: 25 },
+            { nombre: "Chicharrón 🐖", precio: 27 },
+            { nombre: "Picadillo 🧆", precio: 25 },
+            { nombre: "Costilla de res 🍖", precio: 30 },
+            { nombre: "Suadero 🥩", precio: 28 },
+            { nombre: "Pancita a la mexicana 🌶️", precio: 32 },
+            { nombre: "Huitlacoche 🍄", precio: 30 }
+        ];
+
+        let bebidas = [
+            { nombre: "Coca-Cola 🥤", precio: 18 },
+            { nombre: "Jarritos de sabor 🍊", precio: 16 }
+        ];
+
+        let complementos = [
+            { nombre: "Queso gratinado 🧀", precio: 12 },
+            { nombre: "Lechuga 🥬", precio: 5 },
+            { nombre: "Crema 🥛", precio: 7 },
+            { nombre: "Queso fresco 🧀", precio: 8 },
+            { nombre: "Cilantro 🌿", precio: 3 },
+            { nombre: "Cebolla 🧅", precio: 3 },
+            { nombre: "Salsa verde 🌶️", precio: 4 },
+            { nombre: "Salsa roja 🔥", precio: 4 }
+        ];
+
+        let carrito = [];
+        let currentCategory = '';
+        let pendingItem = { categoria: '', guisado: null, cantidad: 1, complementos: [] };
+
+        // Estado de admin
+        let adminActivo = false;
+
+        // ========== FUNCIONES DE PANTALLA ==========
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Renderizar menú principal
+        function renderMenu() {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = '';
+            [...categoriasProductos, 'Refresco'].forEach(cat => {
+                const div = document.createElement('div');
+                div.className = 'category-card';
+                div.dataset.cat = cat;
+                div.textContent = cat === 'Refresco' ? '🥤 Refrescos' : 
+                                 (cat === 'Huarache' ? '🌮 Huaraches' : 
+                                 cat === 'Quesadilla' ? '🫔 Quesadillas' :
+                                 cat === 'Gordita' ? '🫓 Gorditas' :
+                                 cat === 'Pambazo' ? '🥪 Pambazos' :
+                                 cat === 'Taco' ? '🌮 Tacos' :
+                                 cat === 'Tostada' ? '🫓 Tostadas' : cat);
+                grid.appendChild(div);
+            });
+
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    currentCategory = card.dataset.cat;
+                    if (currentCategory === 'Refresco') {
+                        showScreen('screenGuisado');
+                        document.getElementById('categoriaElegida').innerText = 'Refresco';
+                        renderBebidas();
+                    } else {
+                        showScreen('screenGuisado');
+                        document.getElementById('categoriaElegida').innerText = currentCategory;
+                        renderGuisados();
+                    }
+                });
+            });
+        }
+
+        function renderGuisados() {
+            const container = document.getElementById('guisadosList');
+            container.innerHTML = '';
+            guisados.forEach((g, index) => {
+                const div = document.createElement('div');
+                div.className = 'guisado-item';
+                div.innerHTML = `
+                    <span class="guisado-nombre">${g.nombre}</span>
+                    <span class="guisado-precio">$${g.precio}</span>
+                    <div class="cantidad-control">
+                        <button class="cantidad-menos" data-index="${index}">-</button>
+                        <span id="cantidad-${index}">1</span>
+                        <button class="cantidad-mas" data-index="${index}">+</button>
+                    </div>
+                    <button class="btn-seleccionar seleccionar-guisado" data-index="${index}">Seleccionar</button>
+                `;
+                container.appendChild(div);
+            });
+
+            document.querySelectorAll('.cantidad-mas').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.dataset.index;
+                    const span = document.getElementById(`cantidad-${idx}`);
+                    span.innerText = parseInt(span.innerText) + 1;
+                });
+            });
+            document.querySelectorAll('.cantidad-menos').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.dataset.index;
+                    const span = document.getElementById(`cantidad-${idx}`);
+                    let val = parseInt(span.innerText);
+                    if (val > 1) span.innerText = val - 1;
+                });
+            });
+
+            document.querySelectorAll('.seleccionar-guisado').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.dataset.index;
+                    const cantidad = parseInt(document.getElementById(`cantidad-${idx}`).innerText);
+                    const guisado = guisados[idx];
+                    pendingItem = {
+                        categoria: currentCategory,
+                        guisado: { ...guisado, cantidad },
+                        complementos: []
+                    };
+                    showScreen('screenComplementos');
+                    renderComplementos();
+                });
+            });
+        }
+
+        function renderBebidas() {
+            const container = document.getElementById('guisadosList');
+            container.innerHTML = '';
+            bebidas.forEach((b, index) => {
+                const div = document.createElement('div');
+                div.className = 'guisado-item';
+                div.innerHTML = `
+                    <span class="guisado-nombre">${b.nombre}</span>
+                    <span class="guisado-precio">$${b.precio}</span>
+                    <div class="cantidad-control">
+                        <button class="cantidad-menos-b" data-index="${index}">-</button>
+                        <span id="cantidad-b-${index}">1</span>
+                        <button class="cantidad-mas-b" data-index="${index}">+</button>
+                    </div>
+                    <button class="btn-seleccionar seleccionar-bebida" data-index="${index}">Seleccionar</button>
+                `;
+                container.appendChild(div);
+            });
+
+            document.querySelectorAll('.cantidad-mas-b').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.dataset.index;
+                    const span = document.getElementById(`cantidad-b-${idx}`);
+                    span.innerText = parseInt(span.innerText) + 1;
+                });
+            });
+            document.querySelectorAll('.cantidad-menos-b').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.dataset.index;
+                    const span = document.getElementById(`cantidad-b-${idx}`);
+                    let val = parseInt(span.innerText);
+                    if (val > 1) span.innerText = val - 1;
+                });
+            });
+
+            document.querySelectorAll('.seleccionar-bebida').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.dataset.index;
+                    const cantidad = parseInt(document.getElementById(`cantidad-b-${idx}`).innerText);
+                    const bebida = bebidas[idx];
+                    for (let i = 0; i < cantidad; i++) {
+                        carrito.push({ nombre: bebida.nombre, precio: bebida.precio });
+                    }
+                    renderCarrito();
+                    showScreen('screenMenu');
+                });
+            });
+        }
+
+        function renderComplementos() {
+            const container = document.getElementById('complementosList');
+            container.innerHTML = '';
+            complementos.forEach((comp, index) => {
+                const div = document.createElement('div');
+                div.className = 'complemento-item';
+                div.innerHTML = `
+                    <label>
+                        <input type="checkbox" class="comp-check" data-index="${index}">
+                        ${comp.nombre} <span style="color:#d62828;">+$${comp.precio}</span>
+                    </label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        document.getElementById('addToCartBtn').addEventListener('click', () => {
+            if (!pendingItem.guisado) return;
+            const checkboxes = document.querySelectorAll('.comp-check:checked');
+            let complementosSeleccionados = [];
+            let precioExtras = 0;
+            checkboxes.forEach(cb => {
+                const idx = cb.dataset.index;
+                const comp = complementos[idx];
+                complementosSeleccionados.push(comp.nombre);
+                precioExtras += comp.precio;
+            });
+            const base = pendingItem.guisado;
+            const cantidad = base.cantidad;
+            const precioUnitario = base.precio + precioExtras;
+            const complementosStr = complementosSeleccionados.length ? ' con ' + complementosSeleccionados.join(', ') : '';
+            for (let i = 0; i < cantidad; i++) {
+                carrito.push({
+                    nombre: `${pendingItem.categoria} de ${base.nombre}${complementosStr}`,
+                    precio: precioUnitario
+                });
+            }
+            renderCarrito();
+            pendingItem = { categoria: '', guisado: null, cantidad: 1, complementos: [] };
+            showScreen('screenMenu');
+        });
+
+        document.getElementById('backToMenuBtn').addEventListener('click', () => showScreen('screenMenu'));
+        document.getElementById('backToGuisadoBtn').addEventListener('click', () => {
+            showScreen('screenGuisado');
+            if (currentCategory === 'Refresco') renderBebidas();
+            else renderGuisados();
+        });
+
+        function renderCarrito() {
+            const cartList = document.getElementById('cart-list');
+            if (carrito.length === 0) {
+                cartList.innerHTML = '<li style="text-align:center;">🛒 Carrito vacío</li>';
+                return;
+            }
+            let html = '';
+            let total = 0;
+            carrito.forEach((item, idx) => {
+                total += item.precio;
+                html += `<li class="cart-item-li">
+                    <span>${item.nombre}</span>
+                    <span>$${item.precio} <button style="background:#d33; border:none; color:white; border-radius:50%; padding:0.2rem 0.8rem; cursor:pointer;" data-index="${idx}" class="remove-item">✖</button></span>
+                </li>`;
+            });
+            html += `<li class="cart-item-li" style="background:#fdba3a;"><span>TOTAL:</span><span>$${total}</span></li>`;
+            cartList.innerHTML = html;
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.dataset.index;
+                    carrito.splice(idx, 1);
+                    renderCarrito();
+                });
+            });
+        }
+
+        document.getElementById('enviarWhatsApp').addEventListener('click', () => {
+            if (carrito.length === 0) { alert('Carrito vacío'); return; }
+            let msg = "🍽️ *Pedido Antojitos Elvia* 🍽️%0A%0A";
+            carrito.forEach(i => msg += `• ${i.nombre}: $${i.precio}%0A`);
+            const total = carrito.reduce((acc, i) => acc + i.precio, 0);
+            msg += `%0A*TOTAL: $${total}*%0A`;
+            const coment = document.getElementById('comentarios').value.trim();
+            if (coment) msg += `%0A📝 *Comentario:* ${coment}%0A`;
+            msg += `%0A🇲🇽 ¡Gracias!`;
+            window.open(`https://wa.me/5613647545?text=${msg}`, '_blank');
+        });
+
+        // ========== ADMIN CON CONTRASEÑA ==========
+        const modal = document.getElementById('passwordModal');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminBtn = document.getElementById('adminToggleBtn');
+        const passwordInput = document.getElementById('adminPassword');
+        const submitBtn = document.getElementById('submitPassword');
+        const cancelBtn = document.getElementById('cancelPassword');
+
+        function actualizarBotonAdmin() {
+            if (adminActivo) {
+                adminBtn.classList.remove('cerrado');
+                adminBtn.classList.add('abierto');
+                adminBtn.innerHTML = ' Cerrar Admin';
+            } else {
+                adminBtn.classList.remove('abierto');
+                adminBtn.classList.add('cerrado');
+                adminBtn.innerHTML = ' Administrador';
+            }
+        }
+
+        adminBtn.addEventListener('click', () => {
+            if (adminActivo) {
+                adminActivo = false;
+                adminPanel.classList.remove('show');
+                actualizarBotonAdmin();
+            } else {
+                modal.classList.add('show');
+                passwordInput.value = '';
+            }
+        });
+
+        submitBtn.addEventListener('click', () => {
+            if (passwordInput.value === 'Elvialogar') {
+                modal.classList.remove('show');
+                adminActivo = true;
+                adminPanel.classList.add('show');
+                actualizarBotonAdmin();
+                renderAdminLists();
+            } else {
+                alert('❌ Contraseña incorrecta');
+            }
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        // Tabs de admin
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.admin-category').forEach(c => c.classList.remove('active'));
+                document.getElementById(`admin-${tab.dataset.adminCat}`).classList.add('active');
+            });
+        });
+
+        // Renderizar listas admin
+        function renderAdminLists() {
+            const prodList = document.getElementById('productosAdminList');
+            prodList.innerHTML = '';
+            categoriasProductos.forEach((cat, idx) => {
+                prodList.innerHTML += `
+                    <div class="admin-item">
+                        <label><input type="checkbox" class="prod-check" value="${idx}"> ${cat}</label>
+                        <div class="item-controls">
+                            <button onclick="editarProducto(${idx})">✏️ Editar</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const guisadoList = document.getElementById('guisadosAdminList');
+            guisadoList.innerHTML = '';
+            guisados.forEach((g, idx) => {
+                guisadoList.innerHTML += `
+                    <div class="admin-item">
+                        <label><input type="checkbox" class="guisado-check" value="${idx}"> ${g.nombre} - $${g.precio}</label>
+                        <div class="item-controls">
+                            <button onclick="editarGuisado(${idx})">✏️ Editar</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const compList = document.getElementById('complementosAdminList');
+            compList.innerHTML = '';
+            complementos.forEach((c, idx) => {
+                compList.innerHTML += `
+                    <div class="admin-item">
+                        <label><input type="checkbox" class="comp-check-admin" value="${idx}"> ${c.nombre} - $${c.precio}</label>
+                        <div class="item-controls">
+                            <button onclick="editarComplemento(${idx})">✏️ Editar</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const bebList = document.getElementById('bebidasAdminList');
+            bebList.innerHTML = '';
+            bebidas.forEach((b, idx) => {
+                bebList.innerHTML += `
+                    <div class="admin-item">
+                        <label><input type="checkbox" class="bebida-check" value="${idx}"> ${b.nombre} - $${b.precio}</label>
+                        <div class="item-controls">
+                            <button onclick="editarBebida(${idx})">✏️ Editar</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.editarProducto = (idx) => {
+            const nuevo = prompt('Editar nombre de categoría:', categoriasProductos[idx]);
+            if (nuevo) categoriasProductos[idx] = nuevo;
+            renderAdminLists();
+            renderMenu();
+        };
+        window.editarGuisado = (idx) => {
+            const nombre = prompt('Nuevo nombre:', guisados[idx].nombre);
+            const precio = prompt('Nuevo precio:', guisados[idx].precio);
+            if (nombre && precio) guisados[idx] = { nombre, precio: parseFloat(precio) };
+            renderAdminLists();
+        };
+        window.editarComplemento = (idx) => {
+            const nombre = prompt('Nuevo nombre:', complementos[idx].nombre);
+            const precio = prompt('Nuevo precio:', complementos[idx].precio);
+            if (nombre && precio) complementos[idx] = { nombre, precio: parseFloat(precio) };
+            renderAdminLists();
+        };
+        window.editarBebida = (idx) => {
+            const nombre = prompt('Nuevo nombre:', bebidas[idx].nombre);
+            const precio = prompt('Nuevo precio:', bebidas[idx].precio);
+            if (nombre && precio) bebidas[idx] = { nombre, precio: parseFloat(precio) };
+            renderAdminLists();
+        };
+
+        document.getElementById('saveProductoBtn').addEventListener('click', () => {
+            const name = document.getElementById('newProductoName').value.trim();
+            if (name) { categoriasProductos.push(name); renderAdminLists(); renderMenu(); }
+        });
+        document.getElementById('saveGuisadoBtn').addEventListener('click', () => {
+            const name = document.getElementById('newGuisadoName').value.trim();
+            const price = parseFloat(document.getElementById('newGuisadoPrice').value);
+            if (name && !isNaN(price)) { guisados.push({ nombre: name, precio: price }); renderAdminLists(); }
+        });
+        document.getElementById('saveComplementoBtn').addEventListener('click', () => {
+            const name = document.getElementById('newComplementoName').value.trim();
+            const price = parseFloat(document.getElementById('newComplementoPrice').value);
+            if (name && !isNaN(price)) { complementos.push({ nombre: name, precio: price }); renderAdminLists(); }
+        });
+        document.getElementById('saveBebidaBtn').addEventListener('click', () => {
+            const name = document.getElementById('newBebidaName').value.trim();
+            const price = parseFloat(document.getElementById('newBebidaPrice').value);
+            if (name && !isNaN(price)) { bebidas.push({ nombre: name, precio: price }); renderAdminLists(); }
+        });
+
+        document.getElementById('deleteProductosBtn').addEventListener('click', () => {
+            const checks = document.querySelectorAll('.prod-check:checked');
+            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
+            indices.forEach(i => categoriasProductos.splice(i, 1));
+            renderAdminLists(); renderMenu();
+        });
+        document.getElementById('deleteGuisadosBtn').addEventListener('click', () => {
+            const checks = document.querySelectorAll('.guisado-check:checked');
+            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
+            indices.forEach(i => guisados.splice(i, 1));
+            renderAdminLists();
+        });
+        document.getElementById('deleteComplementosBtn').addEventListener('click', () => {
+            const checks = document.querySelectorAll('.comp-check-admin:checked');
+            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
+            indices.forEach(i => complementos.splice(i, 1));
+            renderAdminLists();
+        });
+        document.getElementById('deleteBebidasBtn').addEventListener('click', () => {
+            const checks = document.querySelectorAll('.bebida-check:checked');
+            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
+            indices.forEach(i => bebidas.splice(i, 1));
+            renderAdminLists();
+        });
+
+        // Inicialización
+        renderMenu();
+        renderCarrito();
+        actualizarBotonAdmin();
+    })();
+</script>
+</body>
+</html>
