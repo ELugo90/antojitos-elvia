@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>Antojitos Elvia 🌮 - Sistema Profesional de Pedidos</title>
+    <title>Antojitos Elvia 🌮 - Sistema de Pedidos</title>
     <style>
         * {
             margin: 0;
@@ -13,36 +13,39 @@
         }
 
         body {
-            background: #f5f0e8;
+            background: #f8f4ec;
             min-height: 100vh;
-            padding: 1.5rem;
+            padding: 1rem;
         }
 
         .app-wrapper {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            padding: 2rem;
+            background: transparent;
+            padding: 0.5rem;
         }
 
-        /* Header profesional */
+        /* Header con logo y carrito alineados */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
             gap: 1rem;
+            background: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .logo-area {
-            flex: 1;
+            display: flex;
+            align-items: center;
         }
 
         .logo-img {
-            max-height: 80px;
+            max-height: 50px;
             width: auto;
             object-fit: contain;
         }
@@ -50,42 +53,30 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
-        .btn-admin {
-            background: white;
-            border: 2px solid #e53e3e;
-            color: #e53e3e;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
+        /* Admin como texto */
+        .admin-text {
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            text-decoration: underline dotted #e53e3e;
+            transition: color 0.2s;
+        }
+        .admin-text:hover {
+            color: #e53e3e;
         }
 
-        .btn-admin:hover {
-            background: #e53e3e;
-            color: white;
-        }
-
-        .btn-admin.abierto {
-            background: #e53e3e;
-            color: white;
-        }
-
-        /* Icono del carrito */
+        /* Icono del carrito más pequeño */
         .cart-icon {
             position: relative;
             cursor: pointer;
-            font-size: 2rem;
+            font-size: 1.5rem;
             background: #f8fafc;
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -95,7 +86,6 @@
         }
         .cart-icon:hover {
             border-color: #e53e3e;
-            transform: scale(1.05);
         }
         .cart-count {
             position: absolute;
@@ -103,10 +93,10 @@
             right: -5px;
             background: #e53e3e;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -132,40 +122,37 @@
             background: white;
             padding: 2rem;
             border-radius: 24px;
-            max-width: 600px;
+            max-width: 500px;
             width: 90%;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
         .cart-modal-content h2 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: #1a1a1a;
             margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid #e53e3e;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #e53e3e;
         }
         .cart-modal-items {
             list-style: none;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         .cart-modal-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
+            padding: 0.6rem;
             background: #f8fafc;
-            border-radius: 12px;
+            border-radius: 10px;
             margin-bottom: 0.5rem;
-        }
-        .cart-modal-item span:first-child {
-            flex: 1;
-            margin-right: 1rem;
+            font-size: 0.9rem;
         }
         .cart-modal-total {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #e53e3e;
             text-align: right;
@@ -177,16 +164,17 @@
         .cart-modal-field label {
             display: block;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
             color: #4a5568;
+            font-size: 0.9rem;
         }
         .cart-modal-field input,
         .cart-modal-field textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.6rem;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
         }
         .cart-modal-field input:focus,
         .cart-modal-field textarea:focus {
@@ -195,8 +183,8 @@
         }
         .cart-modal-buttons {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 0.8rem;
+            margin-top: 1rem;
         }
         .cart-modal-buttons button {
             flex: 1;
@@ -204,18 +192,15 @@
             border: none;
             color: white;
             font-weight: 600;
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 0.8rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            font-size: 0.9rem;
         }
         .cart-modal-buttons button:last-child {
             background: white;
             color: #4a5568;
             border: 2px solid #e2e8f0;
-        }
-        .cart-modal-buttons button:hover {
-            opacity: 0.9;
         }
 
         /* Modal de contraseña */
@@ -234,35 +219,28 @@
         }
         .modal-content {
             background: white;
-            padding: 2.5rem;
-            border-radius: 24px;
-            max-width: 400px;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 350px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
         .modal-content h3 {
             color: #1a1a1a;
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
         }
         .modal-content input {
             width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
-            border-radius: 12px;
+            padding: 0.8rem;
+            font-size: 0.95rem;
+            border-radius: 10px;
             border: 2px solid #e2e8f0;
-            margin-bottom: 1.5rem;
-            transition: border-color 0.2s;
-        }
-        .modal-content input:focus {
-            outline: none;
-            border-color: #e53e3e;
+            margin-bottom: 1rem;
         }
         .modal-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             justify-content: center;
         }
         .modal-buttons button {
@@ -270,12 +248,10 @@
             border: none;
             color: white;
             font-weight: 600;
-            font-size: 1rem;
-            padding: 0.75rem 2rem;
-            border-radius: 12px;
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background 0.2s;
-            border: 2px solid #e53e3e;
+            font-size: 0.9rem;
         }
         .modal-buttons button:last-child {
             background: white;
@@ -285,12 +261,13 @@
 
         /* Panel de administración */
         .admin-panel {
-            background: #f8fafc;
-            border-radius: 24px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             border: 2px solid #e2e8f0;
             display: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
         .admin-panel.show {
             display: block;
@@ -298,24 +275,20 @@
         .admin-tabs {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
+            gap: 0.3rem;
+            margin-bottom: 1.5rem;
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 1rem;
+            padding-bottom: 0.8rem;
         }
         .admin-tab {
             background: none;
             border: none;
             color: #4a5568;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-        .admin-tab:hover {
-            background: #edf2f7;
         }
         .admin-tab.active {
             background: #e53e3e;
@@ -328,19 +301,19 @@
             display: block;
         }
         .admin-list {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 2px solid #e2e8f0;
-            max-height: 400px;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            max-height: 300px;
             overflow-y: auto;
         }
         .admin-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem;
-            border-bottom: 2px solid #edf2f7;
+            padding: 0.6rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.9rem;
         }
         .admin-item:last-child {
             border-bottom: none;
@@ -348,85 +321,69 @@
         .admin-item label {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-weight: 500;
+            gap: 0.6rem;
         }
         .admin-item input[type="checkbox"] {
-            width: 1.2rem;
-            height: 1.2rem;
-            border-radius: 6px;
-            border: 2px solid #e53e3e;
+            width: 1rem;
+            height: 1rem;
         }
         .item-controls button {
             background: none;
             border: none;
             color: #e53e3e;
-            font-weight: 600;
+            font-size: 0.85rem;
             cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-        .item-controls button:hover {
-            background: #fed7d7;
+            padding: 0.3rem 0.6rem;
         }
         .admin-actions {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 0.8rem;
+            margin-top: 1rem;
             flex-wrap: wrap;
         }
         .admin-actions button {
             background: #e53e3e;
             border: none;
             color: white;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            font-size: 0.85rem;
         }
         .admin-add-form {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 0.8rem;
+            margin-top: 1rem;
             flex-wrap: wrap;
         }
         .admin-add-form input {
             flex: 1;
-            padding: 0.75rem;
+            padding: 0.6rem;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-        }
-        .admin-add-form input:focus {
-            outline: none;
-            border-color: #e53e3e;
+            border-radius: 30px;
+            font-size: 0.85rem;
         }
         .admin-add-form button {
             background: #48bb78;
             border: none;
             color: white;
-            font-weight: 600;
-            padding: 0.75rem 2rem;
-            border-radius: 12px;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
             cursor: pointer;
+            font-size: 0.85rem;
         }
 
-        /* Contenido principal */
+        /* Contenido principal - ancho completo */
         .main-content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
+            width: 100%;
         }
 
-        /* Columna izquierda - Flujo de pedido */
+        /* Flow section - sin cuadro de fondo */
         .flow-section {
-            background: white;
-            border-radius: 24px;
-            padding: 2rem;
-            border: 2px solid #e2e8f0;
-            min-height: 600px;
+            width: 100%;
+            min-height: 500px;
             display: flex;
             flex-direction: column;
         }
@@ -441,108 +398,92 @@
         }
 
         .screen h2 {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             color: #1a1a1a;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             font-weight: 600;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid #e53e3e;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e53e3e;
         }
 
-        /* Grid de categorías */
+        /* Grid de categorías - compacto */
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 1rem;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-            max-height: 450px;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.6rem;
         }
         .category-card {
-            background: #f8fafc;
+            background: white;
             border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 1.5rem 0.5rem;
+            border-radius: 40px;
+            padding: 0.7rem 0.3rem;
             text-align: center;
-            font-weight: 600;
-            font-size: 1.1rem;
+            font-weight: 500;
+            font-size: 0.9rem;
             color: #1a1a1a;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
         .category-card:hover {
             border-color: #e53e3e;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(229, 62, 62, 0.1);
         }
 
-        /* Lista de guisados */
+        /* Lista de guisados - compacta */
         #guisadosList {
-            flex: 1;
             overflow-y: auto;
-            padding-right: 0.5rem;
-            margin-bottom: 1rem;
             max-height: 400px;
+            margin-bottom: 1rem;
         }
         .guisado-item {
-            background: #f8fafc;
+            background: white;
             border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            border-radius: 40px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 0.6rem;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 1rem;
-        }
-        .guisado-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         .guisado-nombre {
-            font-weight: 600;
-            font-size: 1.2rem;
+            font-weight: 500;
+            font-size: 0.95rem;
             color: #1a1a1a;
         }
         .guisado-precio {
             background: #e53e3e;
             color: white;
-            border-radius: 50px;
-            padding: 0.25rem 1rem;
-            font-weight: 600;
-            font-size: 1rem;
+            border-radius: 30px;
+            padding: 0.2rem 0.8rem;
+            font-weight: 500;
+            font-size: 0.85rem;
         }
         .cantidad-control {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
             background: white;
             border: 2px solid #e2e8f0;
-            border-radius: 50px;
-            padding: 0.25rem;
+            border-radius: 30px;
+            padding: 0.15rem;
         }
         .cantidad-control button {
-            width: 36px;
-            height: 36px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             border: none;
             background: #e53e3e;
             color: white;
-            font-weight: 700;
-            font-size: 1.2rem;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .cantidad-control button:hover {
-            opacity: 0.9;
         }
         .cantidad-control span {
-            font-weight: 600;
-            font-size: 1.2rem;
-            min-width: 30px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            min-width: 25px;
             text-align: center;
         }
 
@@ -550,101 +491,69 @@
             background: #e53e3e;
             border: none;
             color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
             cursor: pointer;
-            transition: opacity 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-seleccionar:hover {
-            opacity: 0.9;
         }
 
-        /* Sección de personalización */
+        /* Personalización */
         .personalizacion-section {
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             padding: 1rem;
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             border: 2px solid #e2e8f0;
         }
 
-        .complementos-gratis {
-            margin-bottom: 1.5rem;
-        }
-        .complementos-gratis h3 {
-            font-size: 1.2rem;
-            color: #1a1a1a;
-            margin-bottom: 1rem;
+        .complementos-gratis h3,
+        .extras-costo h3 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
             font-weight: 600;
         }
+
         .complementos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
             gap: 0.5rem;
+            margin-bottom: 1rem;
         }
+
         .complemento-item-gratis {
             background: #f8fafc;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 0.5rem;
+            border-radius: 30px;
+            padding: 0.4rem 0.6rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
             cursor: pointer;
+            font-size: 0.85rem;
         }
         .complemento-item-gratis input {
-            width: 1rem;
-            height: 1rem;
-            cursor: pointer;
-        }
-        .complemento-item-gratis span {
-            font-size: 0.9rem;
-            font-weight: 500;
+            width: 0.9rem;
+            height: 0.9rem;
         }
 
-        .extras-costo {
-            margin-bottom: 1.5rem;
-        }
-        .extras-costo h3 {
-            font-size: 1.2rem;
-            color: #1a1a1a;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
         .extra-item {
             background: #f8fafc;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 0.75rem;
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
             margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
+            font-size: 0.85rem;
         }
         .extra-item select {
-            padding: 0.25rem;
+            padding: 0.25rem 0.5rem;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        .extra-item label {
-            font-weight: 600;
-            color: #4a5568;
-        }
-        .btn-agregar-extra {
-            background: #e53e3e;
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            flex: 1;
         }
 
         .btn-principal {
@@ -652,75 +561,53 @@
             border: none;
             color: white;
             font-weight: 600;
-            font-size: 1.1rem;
-            padding: 1rem;
-            border-radius: 12px;
+            font-size: 0.95rem;
+            padding: 0.8rem;
+            border-radius: 40px;
             cursor: pointer;
-            transition: opacity 0.2s;
             width: 100%;
             margin-top: 1rem;
-        }
-        .btn-principal:hover {
-            opacity: 0.9;
         }
         .btn-secundario {
             background: white;
             border: 2px solid #e2e8f0;
             color: #4a5568;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 0.75rem;
-            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.6rem;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.2s;
             width: 100%;
             margin-top: 0.5rem;
         }
-        .btn-secundario:hover {
-            border-color: #e53e3e;
-            color: #e53e3e;
-        }
 
-        /* Scroll personalizado */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #edf2f7;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
+        footer {
+            text-align: center;
+            color: #718096;
+            margin-top: 2rem;
+            font-size: 0.8rem;
         }
 
         /* Responsive */
-        @media (max-width: 900px) {
+        @media (max-width: 600px) {
             .header {
-                flex-direction: column;
-                align-items: flex-start;
+                padding: 0.6rem 1rem;
             }
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
-    <!-- Header profesional -->
+    <!-- Header con logo y carrito alineados -->
     <div class="header">
         <div class="logo-area">
-            <img src="logo.png" alt="Antojitos Elvia" class="logo-img" onerror="this.src='https://via.placeholder.com/300x80?text=Antojitos+Elvia'">
+            <img src="logo.png" alt="Antojitos Elvia" class="logo-img" onerror="this.src='https://via.placeholder.com/150x50?text=Antojitos+Elvia'">
         </div>
         <div class="header-right">
-            <button class="btn-admin" id="adminToggleBtn">
-                <span>⚙️</span> Admin
-            </button>
+            <span class="admin-text" id="adminToggleBtn">Administrador</span>
             <div class="cart-icon" id="cartIcon">
                 🛒
                 <span class="cart-count" id="cartCount">0</span>
@@ -732,7 +619,7 @@
     <div id="passwordModal" class="password-modal">
         <div class="modal-content">
             <h3>Acceso Administrador</h3>
-            <input type="password" id="adminPassword" placeholder="Ingresa tu contraseña" value="">
+            <input type="password" id="adminPassword" placeholder="Contraseña">
             <div class="modal-buttons">
                 <button id="submitPassword">Entrar</button>
                 <button id="cancelPassword">Cancelar</button>
@@ -748,22 +635,22 @@
             <div class="cart-modal-total" id="cartModalTotal">Total: $0</div>
             
             <div class="cart-modal-field">
-                <label>👤 Nombre completo:</label>
+                <label>👤 Nombre:</label>
                 <input type="text" id="customerName" placeholder="Ej: Juan Pérez">
             </div>
             
             <div class="cart-modal-field">
-                <label>📍 Dirección de entrega:</label>
+                <label>📍 Dirección:</label>
                 <input type="text" id="customerAddress" placeholder="Calle, número, colonia">
             </div>
             
             <div class="cart-modal-field">
-                <label>💬 Comentarios adicionales:</label>
-                <textarea id="customerComments" rows="3" placeholder="¿Alguna indicación especial?"></textarea>
+                <label>💬 Comentarios:</label>
+                <textarea id="customerComments" rows="2" placeholder="¿Alguna indicación?"></textarea>
             </div>
             
             <div class="cart-modal-buttons">
-                <button id="confirmCart">Confirmar y enviar</button>
+                <button id="confirmCart">Confirmar pedido</button>
                 <button id="closeCartModal">Seguir comprando</button>
             </div>
         </div>
@@ -781,11 +668,10 @@
 
         <!-- Categorías de productos -->
         <div id="admin-productos" class="admin-category active">
-            <h3 style="color:#1a1a1a; margin-bottom:1rem;">Categorías del menú</h3>
             <div class="admin-list" id="productosAdminList"></div>
             <div class="admin-actions">
-                <button id="addProductoBtn">➕ Agregar categoría</button>
-                <button id="deleteProductosBtn">🗑️ Eliminar seleccionadas</button>
+                <button id="addProductoBtn">➕ Agregar</button>
+                <button id="deleteProductosBtn">🗑️ Eliminar</button>
             </div>
             <div class="admin-add-form">
                 <input type="text" id="newProductoName" placeholder="Ej: Tostada">
@@ -795,14 +681,13 @@
 
         <!-- Guisados -->
         <div id="admin-guisados" class="admin-category">
-            <h3 style="color:#1a1a1a; margin-bottom:1rem;">Guisados</h3>
             <div class="admin-list" id="guisadosAdminList"></div>
             <div class="admin-actions">
-                <button id="addGuisadoBtn">➕ Agregar guisado</button>
-                <button id="deleteGuisadosBtn">🗑️ Eliminar seleccionados</button>
+                <button id="addGuisadoBtn">➕ Agregar</button>
+                <button id="deleteGuisadosBtn">🗑️ Eliminar</button>
             </div>
             <div class="admin-add-form">
-                <input type="text" id="newGuisadoName" placeholder="Ej: Tinga de pollo">
+                <input type="text" id="newGuisadoName" placeholder="Nombre">
                 <input type="number" id="newGuisadoPrice" placeholder="Precio">
                 <button id="saveGuisadoBtn">Guardar</button>
             </div>
@@ -810,11 +695,10 @@
 
         <!-- Complementos gratis -->
         <div id="admin-complementos" class="admin-category">
-            <h3 style="color:#1a1a1a; margin-bottom:1rem;">Complementos sin costo</h3>
             <div class="admin-list" id="complementosAdminList"></div>
             <div class="admin-actions">
-                <button id="addComplementoBtn">➕ Agregar complemento</button>
-                <button id="deleteComplementosBtn">🗑️ Eliminar seleccionados</button>
+                <button id="addComplementoBtn">➕ Agregar</button>
+                <button id="deleteComplementosBtn">🗑️ Eliminar</button>
             </div>
             <div class="admin-add-form">
                 <input type="text" id="newComplementoName" placeholder="Ej: Cebolla">
@@ -824,11 +708,10 @@
 
         <!-- Extras con costo -->
         <div id="admin-extras" class="admin-category">
-            <h3 style="color:#1a1a1a; margin-bottom:1rem;">Extras con costo</h3>
             <div class="admin-list" id="extrasAdminList"></div>
             <div class="admin-actions">
-                <button id="addExtraBtn">➕ Agregar extra</button>
-                <button id="deleteExtrasBtn">🗑️ Eliminar seleccionados</button>
+                <button id="addExtraBtn">➕ Agregar</button>
+                <button id="deleteExtrasBtn">🗑️ Eliminar</button>
             </div>
             <div class="admin-add-form">
                 <input type="text" id="newExtraName" placeholder="Ej: Queso extra">
@@ -839,14 +722,13 @@
 
         <!-- Bebidas -->
         <div id="admin-bebidas" class="admin-category">
-            <h3 style="color:#1a1a1a; margin-bottom:1rem;">Bebidas</h3>
             <div class="admin-list" id="bebidasAdminList"></div>
             <div class="admin-actions">
-                <button id="addBebidaBtn">➕ Agregar bebida</button>
-                <button id="deleteBebidasBtn">🗑️ Eliminar seleccionadas</button>
+                <button id="addBebidaBtn">➕ Agregar</button>
+                <button id="deleteBebidasBtn">🗑️ Eliminar</button>
             </div>
             <div class="admin-add-form">
-                <input type="text" id="newBebidaName" placeholder="Ej: Jarritos de fresa">
+                <input type="text" id="newBebidaName" placeholder="Nombre">
                 <input type="number" id="newBebidaPrice" placeholder="Precio">
                 <button id="saveBebidaBtn">Guardar</button>
             </div>
@@ -858,7 +740,7 @@
         <div class="flow-section">
             <!-- Pantalla 1: Menú -->
             <div id="screenMenu" class="screen active">
-                <h2>¿Qué antojas hoy? 🌮</h2>
+                <h2>¿Qué antojas? 🌮</h2>
                 <div class="category-grid" id="categoryGrid"></div>
             </div>
 
@@ -866,21 +748,19 @@
             <div id="screenGuisado" class="screen">
                 <h2 id="guisadoTitle">Elige guisado para <span id="categoriaElegida"></span></h2>
                 <div id="guisadosList"></div>
-                <button class="btn-secundario" id="backToMenuBtn">← Volver al menú</button>
+                <button class="btn-secundario" id="backToMenuBtn">← Volver</button>
             </div>
 
             <!-- Pantalla 3: Personalización -->
             <div id="screenPersonalizacion" class="screen">
-                <h2>Personaliza tu <span id="personalizacionTitle"></span></h2>
+                <h2 id="personalizacionTitle"></h2>
                 <div id="personalizacionContainer"></div>
                 <button class="btn-principal" id="addToCartBtn">➕ Agregar al carrito</button>
-                <button class="btn-secundario" id="backToGuisadoBtn">← Elegir otro guisado</button>
+                <button class="btn-secundario" id="backToGuisadoBtn">← Elegir otro</button>
             </div>
         </div>
     </div>
-    <footer>
-        Antojitos Elvia © 2024 - Hecho con ❤️ en México
-    </footer>
+    <footer>Antojitos Elvia © 2024</footer>
 </div>
 
 <script>
@@ -895,13 +775,13 @@
             { nombre: "Picadillo", precio: 25 },
             { nombre: "Costilla de res", precio: 30 },
             { nombre: "Suadero", precio: 28 },
-            { nombre: "Pancita a la mexicana", precio: 32 },
+            { nombre: "Pancita", precio: 32 },
             { nombre: "Huitlacoche", precio: 30 }
         ];
 
         let bebidas = [
             { nombre: "Coca-Cola", precio: 18 },
-            { nombre: "Jarritos de sabor", precio: 16 }
+            { nombre: "Jarritos", precio: 16 }
         ];
 
         let complementosGratis = [
@@ -916,10 +796,9 @@
         let carrito = [];
         let currentCategory = '';
         let selectedGuisado = null;
-        let currentQuantity = 1;
         let adminActivo = false;
 
-        // ========== FUNCIONES DE PANTALLA ==========
+        // ========== FUNCIONES ==========
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -936,18 +815,12 @@
                 const div = document.createElement('div');
                 div.className = 'category-card';
                 div.dataset.cat = cat;
-                div.textContent = cat === 'Refresco' ? '🥤 Refrescos' : 
-                                 cat === 'Huarache' ? '🌮 Huaraches' : 
-                                 cat === 'Quesadilla' ? '🫔 Quesadillas' :
-                                 cat === 'Gordita' ? '🫓 Gorditas' :
-                                 cat === 'Pambazo' ? '🥪 Pambazos' :
-                                 cat === 'Taco' ? '🌮 Tacos' :
-                                 cat === 'Tostada' ? '🫓 Tostadas' : cat;
+                div.textContent = cat === 'Refresco' ? '🥤 Refrescos' : cat;
                 grid.appendChild(div);
             });
 
             document.querySelectorAll('.category-card').forEach(card => {
-                card.addEventListener('click', (e) => {
+                card.addEventListener('click', () => {
                     currentCategory = card.dataset.cat;
                     if (currentCategory === 'Refresco') {
                         showScreen('screenGuisado');
@@ -969,18 +842,14 @@
                 const div = document.createElement('div');
                 div.className = 'guisado-item';
                 div.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-                        <span class="guisado-nombre">${g.nombre}</span>
-                        <span class="guisado-precio">$${g.precio}</span>
+                    <span class="guisado-nombre">${g.nombre}</span>
+                    <span class="guisado-precio">$${g.precio}</span>
+                    <div class="cantidad-control">
+                        <button class="cantidad-menos" data-index="${index}">-</button>
+                        <span id="cantidad-${index}">1</span>
+                        <button class="cantidad-mas" data-index="${index}">+</button>
                     </div>
-                    <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-                        <div class="cantidad-control">
-                            <button class="cantidad-menos" data-index="${index}">-</button>
-                            <span id="cantidad-${index}">1</span>
-                            <button class="cantidad-mas" data-index="${index}">+</button>
-                        </div>
-                        <button class="btn-seleccionar seleccionar-guisado" data-index="${index}">Seleccionar</button>
-                    </div>
+                    <button class="btn-seleccionar seleccionar-guisado" data-index="${index}">Elegir</button>
                 `;
                 container.appendChild(div);
             });
@@ -1044,7 +913,7 @@
             for (let i = 0; i < selectedGuisado.cantidad; i++) {
                 html += `
                     <div class="extra-item">
-                        <label>Producto ${i+1}:</label>
+                        <span>#${i+1}:</span>
                         <select class="extra-select" data-item="${i}">
                             <option value="ninguno">Sin extra</option>
                 `;
@@ -1072,18 +941,14 @@
                 const div = document.createElement('div');
                 div.className = 'guisado-item';
                 div.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:1rem;">
-                        <span class="guisado-nombre">${b.nombre}</span>
-                        <span class="guisado-precio">$${b.precio}</span>
+                    <span class="guisado-nombre">${b.nombre}</span>
+                    <span class="guisado-precio">$${b.precio}</span>
+                    <div class="cantidad-control">
+                        <button class="cantidad-menos-b" data-index="${index}">-</button>
+                        <span id="cantidad-b-${index}">1</span>
+                        <button class="cantidad-mas-b" data-index="${index}">+</button>
                     </div>
-                    <div style="display:flex; align-items:center; gap:1rem;">
-                        <div class="cantidad-control">
-                            <button class="cantidad-menos-b" data-index="${index}">-</button>
-                            <span id="cantidad-b-${index}">1</span>
-                            <button class="cantidad-mas-b" data-index="${index}">+</button>
-                        </div>
-                        <button class="btn-seleccionar seleccionar-bebida" data-index="${index}">Agregar</button>
-                    </div>
+                    <button class="btn-seleccionar seleccionar-bebida" data-index="${index}">Agregar</button>
                 `;
                 container.appendChild(div);
             });
@@ -1110,10 +975,7 @@
                     const cantidad = parseInt(document.getElementById(`cantidad-b-${idx}`).innerText);
                     const bebida = bebidas[idx];
                     for (let i = 0; i < cantidad; i++) {
-                        carrito.push({ 
-                            nombre: bebida.nombre, 
-                            precio: bebida.precio 
-                        });
+                        carrito.push({ nombre: bebida.nombre, precio: bebida.precio });
                     }
                     updateCartCount();
                     showScreen('screenMenu');
@@ -1124,36 +986,31 @@
         document.getElementById('addToCartBtn').addEventListener('click', () => {
             if (!selectedGuisado) return;
 
-            const complementosSeleccionados = [];
+            const complementos = [];
             document.querySelectorAll('.comp-gratis:checked').forEach(cb => {
-                complementosSeleccionados.push(complementosGratis[cb.dataset.index]);
+                complementos.push(complementosGratis[cb.dataset.index]);
             });
 
-            const extrasSeleccionados = [];
+            const extras = [];
             document.querySelectorAll('.extra-select').forEach(select => {
                 if (select.value !== 'ninguno') {
                     const [nombre, precio] = select.value.split('|');
-                    extrasSeleccionados.push({ nombre, precio: parseInt(precio) });
+                    extras.push({ nombre, precio: parseInt(precio) });
                 }
             });
 
-            const complementosStr = complementosSeleccionados.length ? 
-                ' con ' + complementosSeleccionados.join(', ') : '';
+            const complementosStr = complementos.length ? ' con ' + complementos.join(', ') : '';
 
             for (let i = 0; i < selectedGuisado.cantidad; i++) {
-                const extraIndex = i < extrasSeleccionados.length ? i : null;
-                let nombreProducto = `${currentCategory} de ${selectedGuisado.nombre}${complementosStr}`;
-                let precioTotal = selectedGuisado.precio;
+                let nombre = `${currentCategory} de ${selectedGuisado.nombre}${complementosStr}`;
+                let precio = selectedGuisado.precio;
 
-                if (extraIndex !== null && extrasSeleccionados[extraIndex]) {
-                    nombreProducto += ` + ${extrasSeleccionados[extraIndex].nombre}`;
-                    precioTotal += extrasSeleccionados[extraIndex].precio;
+                if (i < extras.length) {
+                    nombre += ` + ${extras[i].nombre}`;
+                    precio += extras[i].precio;
                 }
 
-                carrito.push({
-                    nombre: nombreProducto,
-                    precio: precioTotal
-                });
+                carrito.push({ nombre, precio });
             }
 
             updateCartCount();
@@ -1164,16 +1021,13 @@
         document.getElementById('backToMenuBtn').addEventListener('click', () => showScreen('screenMenu'));
         document.getElementById('backToGuisadoBtn').addEventListener('click', () => {
             showScreen('screenGuisado');
-            if (currentCategory === 'Refresco') renderBebidas();
-            else renderGuisados();
+            currentCategory === 'Refresco' ? renderBebidas() : renderGuisados();
         });
 
         // ========== MODAL DEL CARRITO ==========
         const cartModal = document.getElementById('cartModal');
         const cartIcon = document.getElementById('cartIcon');
-        const closeCartModal = document.getElementById('closeCartModal');
-        const confirmCart = document.getElementById('confirmCart');
-
+        
         function renderCartModal() {
             const itemsList = document.getElementById('cartModalItems');
             const totalSpan = document.getElementById('cartModalTotal');
@@ -1192,7 +1046,7 @@
                     <span>${item.nombre}</span>
                     <span>
                         $${item.precio}
-                        <button style="background:#e53e3e; border:none; color:white; width:24px; height:24px; border-radius:50%; cursor:pointer; margin-left:0.5rem;" onclick="eliminarDelCarrito(${idx})">✕</button>
+                        <button style="background:#e53e3e; border:none; color:white; width:22px; height:22px; border-radius:50%; cursor:pointer; margin-left:0.5rem;" onclick="eliminarDelCarrito(${idx})">✕</button>
                     </span>
                 </li>`;
             });
@@ -1211,11 +1065,11 @@
             cartModal.classList.add('show');
         });
 
-        closeCartModal.addEventListener('click', () => {
+        document.getElementById('closeCartModal').addEventListener('click', () => {
             cartModal.classList.remove('show');
         });
 
-        confirmCart.addEventListener('click', () => {
+        document.getElementById('confirmCart').addEventListener('click', () => {
             if (carrito.length === 0) {
                 alert('Carrito vacío');
                 return;
@@ -1225,11 +1079,11 @@
             const direccion = document.getElementById('customerAddress').value.trim();
             
             if (!nombre || !direccion) {
-                alert('Por favor ingresa tu nombre y dirección');
+                alert('Ingresa tu nombre y dirección');
                 return;
             }
 
-            let msg = "🍽️ *Nuevo pedido - Antojitos Elvia* 🍽️%0A%0A";
+            let msg = "🍽️ *Pedido Antojitos Elvia* 🍽️%0A%0A";
             msg += `👤 *Nombre:* ${nombre}%0A`;
             msg += `📍 *Dirección:* ${direccion}%0A%0A`;
             msg += `*Pedido:*%0A`;
@@ -1240,8 +1094,7 @@
             
             const coment = document.getElementById('customerComments').value.trim();
             if (coment) msg += `%0A📝 *Comentarios:* ${coment}%0A`;
-            msg += `%0A🇲🇽 ¡Gracias por tu preferencia!`;
-
+            
             window.open(`https://wa.me/5613647545?text=${msg}`, '_blank');
         });
 
@@ -1249,34 +1102,29 @@
         const modal = document.getElementById('passwordModal');
         const adminPanel = document.getElementById('adminPanel');
         const adminBtn = document.getElementById('adminToggleBtn');
-        const passwordInput = document.getElementById('adminPassword');
-        const submitBtn = document.getElementById('submitPassword');
-        const cancelBtn = document.getElementById('cancelPassword');
-
+        
         adminBtn.addEventListener('click', () => {
             if (adminActivo) {
                 adminActivo = false;
                 adminPanel.classList.remove('show');
-                adminBtn.classList.remove('abierto');
             } else {
                 modal.classList.add('show');
-                passwordInput.value = '';
             }
         });
 
-        submitBtn.addEventListener('click', () => {
-            if (passwordInput.value === 'Elvialogar') {
+        document.getElementById('submitPassword').addEventListener('click', () => {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === 'Elvialogar') {
                 modal.classList.remove('show');
                 adminActivo = true;
                 adminPanel.classList.add('show');
-                adminBtn.classList.add('abierto');
                 renderAdminLists();
             } else {
                 alert('Contraseña incorrecta');
             }
         });
 
-        cancelBtn.addEventListener('click', () => {
+        document.getElementById('cancelPassword').addEventListener('click', () => {
             modal.classList.remove('show');
         });
 
@@ -1296,13 +1144,8 @@
             categoriasProductos.forEach((cat, idx) => {
                 prodList.innerHTML += `
                     <div class="admin-item">
-                        <label>
-                            <input type="checkbox" class="prod-check" value="${idx}">
-                            ${cat}
-                        </label>
-                        <div class="item-controls">
-                            <button onclick="editarProducto(${idx})">✏️ Editar</button>
-                        </div>
+                        <label><input type="checkbox" class="prod-check" value="${idx}"> ${cat}</label>
+                        <div class="item-controls"><button onclick="editarProducto(${idx})">✏️</button></div>
                     </div>
                 `;
             });
@@ -1312,13 +1155,8 @@
             guisados.forEach((g, idx) => {
                 guisadoList.innerHTML += `
                     <div class="admin-item">
-                        <label>
-                            <input type="checkbox" class="guisado-check" value="${idx}">
-                            ${g.nombre} - $${g.precio}
-                        </label>
-                        <div class="item-controls">
-                            <button onclick="editarGuisado(${idx})">✏️ Editar</button>
-                        </div>
+                        <label><input type="checkbox" class="guisado-check" value="${idx}"> ${g.nombre} - $${g.precio}</label>
+                        <div class="item-controls"><button onclick="editarGuisado(${idx})">✏️</button></div>
                     </div>
                 `;
             });
@@ -1328,13 +1166,8 @@
             complementosGratis.forEach((c, idx) => {
                 compList.innerHTML += `
                     <div class="admin-item">
-                        <label>
-                            <input type="checkbox" class="comp-check-admin" value="${idx}">
-                            ${c}
-                        </label>
-                        <div class="item-controls">
-                            <button onclick="editarComplemento(${idx})">✏️ Editar</button>
-                        </div>
+                        <label><input type="checkbox" class="comp-check-admin" value="${idx}"> ${c}</label>
+                        <div class="item-controls"><button onclick="editarComplemento(${idx})">✏️</button></div>
                     </div>
                 `;
             });
@@ -1344,13 +1177,8 @@
             extrasConCosto.forEach((e, idx) => {
                 extrasList.innerHTML += `
                     <div class="admin-item">
-                        <label>
-                            <input type="checkbox" class="extra-check-admin" value="${idx}">
-                            ${e.nombre} - $${e.precio}
-                        </label>
-                        <div class="item-controls">
-                            <button onclick="editarExtra(${idx})">✏️ Editar</button>
-                        </div>
+                        <label><input type="checkbox" class="extra-check-admin" value="${idx}"> ${e.nombre} - $${e.precio}</label>
+                        <div class="item-controls"><button onclick="editarExtra(${idx})">✏️</button></div>
                     </div>
                 `;
             });
@@ -1360,48 +1188,43 @@
             bebidas.forEach((b, idx) => {
                 bebList.innerHTML += `
                     <div class="admin-item">
-                        <label>
-                            <input type="checkbox" class="bebida-check" value="${idx}">
-                            ${b.nombre} - $${b.precio}
-                        </label>
-                        <div class="item-controls">
-                            <button onclick="editarBebida(${idx})">✏️ Editar</button>
-                        </div>
+                        <label><input type="checkbox" class="bebida-check" value="${idx}"> ${b.nombre} - $${b.precio}</label>
+                        <div class="item-controls"><button onclick="editarBebida(${idx})">✏️</button></div>
                     </div>
                 `;
             });
         }
 
         window.editarProducto = (idx) => {
-            const nuevo = prompt('Editar nombre:', categoriasProductos[idx]);
+            const nuevo = prompt('Editar:', categoriasProductos[idx]);
             if (nuevo) categoriasProductos[idx] = nuevo;
-            renderAdminLists();
-            renderMenu();
+            renderAdminLists(); renderMenu();
         };
         window.editarGuisado = (idx) => {
-            const nombre = prompt('Nuevo nombre:', guisados[idx].nombre);
-            const precio = prompt('Nuevo precio:', guisados[idx].precio);
+            const nombre = prompt('Nombre:', guisados[idx].nombre);
+            const precio = prompt('Precio:', guisados[idx].precio);
             if (nombre && precio) guisados[idx] = { nombre, precio: parseFloat(precio) };
             renderAdminLists();
         };
         window.editarComplemento = (idx) => {
-            const nuevo = prompt('Nuevo nombre:', complementosGratis[idx]);
+            const nuevo = prompt('Nombre:', complementosGratis[idx]);
             if (nuevo) complementosGratis[idx] = nuevo;
             renderAdminLists();
         };
         window.editarExtra = (idx) => {
-            const nombre = prompt('Nuevo nombre:', extrasConCosto[idx].nombre);
-            const precio = prompt('Nuevo precio:', extrasConCosto[idx].precio);
+            const nombre = prompt('Nombre:', extrasConCosto[idx].nombre);
+            const precio = prompt('Precio:', extrasConCosto[idx].precio);
             if (nombre && precio) extrasConCosto[idx] = { nombre, precio: parseFloat(precio) };
             renderAdminLists();
         };
         window.editarBebida = (idx) => {
-            const nombre = prompt('Nuevo nombre:', bebidas[idx].nombre);
-            const precio = prompt('Nuevo precio:', bebidas[idx].precio);
+            const nombre = prompt('Nombre:', bebidas[idx].nombre);
+            const precio = prompt('Precio:', bebidas[idx].precio);
             if (nombre && precio) bebidas[idx] = { nombre, precio: parseFloat(precio) };
             renderAdminLists();
         };
 
+        // Botones de admin
         document.getElementById('saveProductoBtn').addEventListener('click', () => {
             const name = document.getElementById('newProductoName').value.trim();
             if (name) { categoriasProductos.push(name); renderAdminLists(); renderMenu(); }
@@ -1426,6 +1249,7 @@
             if (name && !isNaN(price)) { bebidas.push({ nombre: name, precio: price }); renderAdminLists(); }
         });
 
+        // Eliminar
         document.getElementById('deleteProductosBtn').addEventListener('click', () => {
             const checks = document.querySelectorAll('.prod-check:checked');
             const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
