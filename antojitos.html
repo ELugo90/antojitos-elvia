@@ -1130,17 +1130,24 @@
         }
 
         function calcularPropina() {
-            const valor = propinaInput.value;
-            
-            if (valor !== '' && !isNaN(parseFloat(valor))) {
-                return parseFloat(valor);
-            }
-            
-            const subtotal = calcularSubtotal();
-            const diezPorciento = Math.round(subtotal * 0.1);
-            propinaInput.placeholder = `$${diezPorciento} (10%)`;
-            return 0;
-        }
+    const valor = propinaInput.value;
+    
+    // Si el usuario escribió algo, usar ese valor
+    if (valor !== '' && !isNaN(parseFloat(valor))) {
+        return parseFloat(valor);
+    }
+    
+    // Si está vacío, calcular y SUMAR el 10%
+    const subtotal = calcularSubtotal();
+    const diezPorciento = Math.round(subtotal * 0.1);
+    
+    // Mostrar el 10% como placeholder
+    propinaInput.placeholder = `$${diezPorciento} (10%)`;
+    
+    // ¡RETORNAR el 10% para que se sume automáticamente!
+    return diezPorciento;
+}
+
 
         function calcularTotal() {
             return calcularSubtotal() + calcularPropina();
@@ -1415,3 +1422,4 @@
 </script>
 </body>
 </html>
+
