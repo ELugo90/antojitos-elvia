@@ -704,9 +704,10 @@
                     <label>💝 Propina</label>
                 </div>
                 <div class="propina-input-group">
-                    <input type="number" id="propinaInput" placeholder="10% sugerido" min="0" step="10">
-                    <span>MXN</span>
-                </div>
+    <span style="font-weight:600; color:#e53e3e; margin-right:0.25rem;">$</span>
+    <input type="number" id="propinaInput" placeholder="10% sugerido" min="0" step="10" style="flex:1;">
+    <span>MXN</span>
+</div>
             </div>
             
             <div class="cart-modal-total" id="cartModalTotal">Total: $0</div>
@@ -1018,30 +1019,37 @@
         }
 
         function calcularPropina() {
-            const valor = parseFloat(propinaInput.value);
-            if (!isNaN(valor) && valor > 0) return valor;
-            
-            // Si está vacío, calcular 10% del subtotal
-            const subtotal = calcularSubtotal();
-            return Math.round(subtotal * 0.1);
-        }
+    const valor = propinaInput.value;
+    
+    // Si el usuario escribió algo, usar ese valor
+    if (valor !== '' && !isNaN(parseFloat(valor))) {
+        return parseFloat(valor);
+    }
+    
+    // Si está vacío, calcular 10% del subtotal
+    const subtotal = calcularSubtotal();
+    const diezPorciento = Math.round(subtotal * 0.1);
+    
+    // Mostrar el 10% como placeholder pero NO agregarlo al total
+    propinaInput.placeholder = `$${diezPorciento} (10%)`;
+    return 0; // Importante: retornar 0 cuando está vacío
+}
 
         function calcularTotal() {
             return calcularSubtotal() + calcularPropina();
         }
 
         function actualizarTotalYCambio() {
-            const total = calcularTotal();
-            document.getElementById('cartModalTotal').textContent = `Total: $${total}`;
-            
-            // Actualizar placeholder de propina con 10%
-            const subtotal = calcularSubtotal();
-            propinaInput.placeholder = `${Math.round(subtotal * 0.1)} (10%)`;
-            
-            const pago = parseFloat(pagoInput.value) || 0;
-            const cambio = pago - total;
-            cambioInfo.textContent = `Cambio: $${cambio >= 0 ? cambio : 0}`;
-        }
+    const subtotal = calcularSubtotal();
+    const propina = calcularPropina();
+    const total = subtotal + propina;
+    
+    document.getElementById('cartModalTotal').textContent = `Total: $${total}`;
+    
+    const pago = parseFloat(pagoInput.value) || 0;
+    const cambio = pago - total;
+    cambioInfo.textContent = `Cambio: $${cambio >= 0 ? cambio : 0}`;
+}
 
         function renderCartModal() {
             const itemsList = document.getElementById('cartModalItems');
