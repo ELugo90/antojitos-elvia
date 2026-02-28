@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Antojitos Elvia 🌮 - Sistema de Pedidos</title>
     <style>
         * {
@@ -25,8 +25,11 @@
             padding: 0.5rem;
         }
 
-        /* Header con logo y carrito alineados */
+        /* Header fijo */
         .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -56,7 +59,6 @@
             gap: 1.5rem;
         }
 
-        /* Admin como texto */
         .admin-text {
             color: #4a5568;
             font-weight: 500;
@@ -69,7 +71,6 @@
             color: #e53e3e;
         }
 
-        /* Icono del carrito más pequeño */
         .cart-icon {
             position: relative;
             cursor: pointer;
@@ -124,7 +125,7 @@
             border-radius: 24px;
             max-width: 500px;
             width: 90%;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
@@ -137,29 +138,142 @@
         }
         .cart-modal-items {
             list-style: none;
-            max-height: 250px;
-            overflow-y: auto;
             margin-bottom: 1rem;
         }
         .cart-modal-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 0.6rem;
-            background: #f8fafc;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            align-items: flex-start;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
         }
+        .cart-modal-item span:first-child {
+            flex: 1;
+            margin-right: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            line-height: 1.4;
+        }
+        .cart-modal-item span:first-child::before {
+            content: "• ";
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        /* Sección de propina */
+        .propina-section {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        .propina-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .propina-header label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .propina-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .propina-input-group input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .propina-input-group input::placeholder {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        .propina-input-group span {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
         .cart-modal-total {
             font-size: 1.2rem;
             font-weight: 700;
             color: #e53e3e;
             text-align: right;
             margin: 1rem 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid #e2e8f0;
         }
+
+        /* Sección de pago */
+        .pago-section {
+            margin: 1rem 0;
+        }
+        .pago-field {
+            margin-bottom: 0.5rem;
+        }
+        .pago-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        .pago-field input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+        .pago-field input:focus {
+            outline: none;
+            border-color: #e53e3e;
+        }
+        .cambio-info {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e53e3e;
+            text-align: right;
+        }
+
+        /* Opciones de entrega */
+        .entrega-opciones {
+            margin-bottom: 1.5rem;
+        }
+        .entrega-opciones h3 {
+            font-size: 1rem;
+            color: #1a1a1a;
+            margin-bottom: 0.8rem;
+        }
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .radio-group input[type="radio"] {
+            width: 1rem;
+            height: 1rem;
+            accent-color: #e53e3e;
+        }
+
         .cart-modal-field {
             margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .cart-modal-field.hidden {
+            display: none;
         }
         .cart-modal-field label {
             display: block;
@@ -181,10 +295,11 @@
             outline: none;
             border-color: #e53e3e;
         }
+
         .cart-modal-buttons {
             display: flex;
             gap: 0.8rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
         .cart-modal-buttons button {
             flex: 1;
@@ -313,7 +428,6 @@
             justify-content: space-between;
             padding: 0.6rem;
             border-bottom: 1px solid #e2e8f0;
-            font-size: 0.9rem;
         }
         .admin-item:last-child {
             border-bottom: none;
@@ -375,22 +489,20 @@
             font-size: 0.85rem;
         }
 
-        /* Contenido principal - ancho completo */
+        /* Contenido principal */
         .main-content {
             width: 100%;
         }
 
-        /* Flow section - sin cuadro de fondo */
         .flow-section {
             width: 100%;
-            min-height: 500px;
+            min-height: auto;
             display: flex;
             flex-direction: column;
         }
 
         .screen {
             display: none;
-            flex: 1;
             flex-direction: column;
         }
         .screen.active {
@@ -406,179 +518,113 @@
             border-bottom: 2px solid #e53e3e;
         }
 
-        /* Grid de categorías - compacto */
-        .category-grid {
+        /* Grid de productos */
+        .productos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 0.6rem;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1rem;
         }
-        .category-card {
+        .producto-card {
             background: white;
             border: 2px solid #e2e8f0;
-            border-radius: 40px;
-            padding: 0.7rem 0.3rem;
+            border-radius: 20px;
+            padding: 1rem 0.5rem;
             text-align: center;
-            font-weight: 500;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.95rem;
             color: #1a1a1a;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
         }
-        .category-card:hover {
+        .producto-card:hover {
             border-color: #e53e3e;
+            transform: translateY(-2px);
+        }
+        .producto-card .precio {
+            color: #e53e3e;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
-        /* Lista de guisados - compacta */
-        #guisadosList {
+        /* Modal de complementos */
+        .complementos-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .complementos-modal.show {
+            display: flex;
+        }
+        .complementos-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
             overflow-y: auto;
-            max-height: 400px;
+        }
+        .complementos-content h3 {
+            font-size: 1.3rem;
+            color: #1a1a1a;
             margin-bottom: 1rem;
         }
-        .guisado-item {
-            background: white;
+        .complementos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+        .complemento-item {
+            background: #f8fafc;
             border: 2px solid #e2e8f0;
-            border-radius: 40px;
-            padding: 0.6rem 1rem;
-            margin-bottom: 0.6rem;
+            border-radius: 30px;
+            padding: 0.6rem;
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
             gap: 0.5rem;
+            cursor: pointer;
         }
-        .guisado-nombre {
+        .complemento-item input {
+            width: 1rem;
+            height: 1rem;
+            accent-color: #e53e3e;
+        }
+        .complemento-item span {
+            font-size: 0.9rem;
             font-weight: 500;
-            font-size: 0.95rem;
-            color: #1a1a1a;
         }
-        .guisado-precio {
-            background: #e53e3e;
-            color: white;
-            border-radius: 30px;
-            padding: 0.2rem 0.8rem;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-        .cantidad-control {
+        .cantidad-selector {
             display: flex;
             align-items: center;
-            gap: 0.3rem;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 30px;
-            padding: 0.15rem;
+            gap: 1rem;
+            margin: 1.5rem 0;
         }
-        .cantidad-control button {
-            width: 28px;
-            height: 28px;
+        .cantidad-selector button {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: none;
             background: #e53e3e;
             color: white;
-            font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.5rem;
             cursor: pointer;
         }
-        .cantidad-control span {
-            font-weight: 500;
-            font-size: 0.95rem;
-            min-width: 25px;
+        .cantidad-selector span {
+            font-size: 1.5rem;
+            font-weight: 600;
+            min-width: 50px;
             text-align: center;
-        }
-
-        .btn-seleccionar {
-            background: #e53e3e;
-            border: none;
-            color: white;
-            font-weight: 500;
-            font-size: 0.85rem;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            cursor: pointer;
-        }
-
-        /* Personalización */
-        .personalizacion-section {
-            margin-top: 0.8rem;
-            padding: 1rem;
-            background: white;
-            border-radius: 20px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .complementos-gratis h3,
-        .extras-costo h3 {
-            font-size: 1rem;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-        }
-
-        .complementos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .complemento-item-gratis {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 30px;
-            padding: 0.4rem 0.6rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-        .complemento-item-gratis input {
-            width: 0.9rem;
-            height: 0.9rem;
-        }
-
-        .extra-item {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 30px;
-            padding: 0.5rem 1rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 0.85rem;
-        }
-        .extra-item select {
-            padding: 0.25rem 0.5rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            flex: 1;
-        }
-
-        .btn-principal {
-            background: #e53e3e;
-            border: none;
-            color: white;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.8rem;
-            border-radius: 40px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 1rem;
-        }
-        .btn-secundario {
-            background: white;
-            border: 2px solid #e2e8f0;
-            color: #4a5568;
-            font-weight: 500;
-            font-size: 0.85rem;
-            padding: 0.6rem;
-            border-radius: 40px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 0.5rem;
         }
 
         footer {
@@ -593,7 +639,7 @@
             .header {
                 padding: 0.6rem 1rem;
             }
-            .category-grid {
+            .productos-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -601,7 +647,7 @@
 </head>
 <body>
 <div class="app-wrapper">
-    <!-- Header con logo y carrito alineados -->
+    <!-- Header fijo -->
     <div class="header">
         <div class="logo-area">
             <img src="logo.png" alt="Antojitos Elvia" class="logo-img" onerror="this.src='https://via.placeholder.com/150x50?text=Antojitos+Elvia'">
@@ -627,21 +673,75 @@
         </div>
     </div>
 
+    <!-- Modal de complementos -->
+    <div id="complementosModal" class="complementos-modal">
+        <div class="complementos-content">
+            <h3 id="complementosTitle">Personaliza tu pedido</h3>
+            <div id="complementosContainer" class="complementos-grid"></div>
+            
+            <div class="cantidad-selector">
+                <button id="cantidadMenos">-</button>
+                <span id="cantidadValue">1</span>
+                <button id="cantidadMas">+</button>
+            </div>
+            
+            <div class="cart-modal-buttons">
+                <button id="agregarAlCarrito">Agregar al carrito</button>
+                <button id="cerrarComplementos">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal del carrito -->
     <div id="cartModal" class="cart-modal">
         <div class="cart-modal-content">
             <h2>🛒 Mi pedido</h2>
             <ul id="cartModalItems" class="cart-modal-items"></ul>
+            
+            <!-- Propina -->
+            <div class="propina-section">
+                <div class="propina-header">
+                    <label>💝 Propina</label>
+                </div>
+                <div class="propina-input-group">
+                    <input type="number" id="propinaInput" placeholder="10% sugerido" min="0" step="10">
+                    <span>MXN</span>
+                </div>
+            </div>
+            
             <div class="cart-modal-total" id="cartModalTotal">Total: $0</div>
+            
+            <!-- Pago -->
+            <div class="pago-section">
+                <div class="pago-field">
+                    <label>💰 ¿Con cuánto pagas?</label>
+                    <input type="number" id="pagoInput" value="0" min="0" step="10">
+                </div>
+                <div class="cambio-info" id="cambioInfo">Cambio: $0</div>
+            </div>
+            
+            <div class="entrega-opciones">
+                <h3>📍 Opción de entrega</h3>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="tipoEntrega" value="recoger" id="recogerRadio" checked>
+                        Recoger en sitio
+                    </label>
+                    <label>
+                        <input type="radio" name="tipoEntrega" value="domicilio" id="domicilioRadio">
+                        Entrega a domicilio
+                    </label>
+                </div>
+            </div>
+            
+            <div class="cart-modal-field hidden" id="direccionField">
+                <label>📍 Dirección completa:</label>
+                <input type="text" id="customerAddress" placeholder="Calle, número, colonia, referencia">
+            </div>
             
             <div class="cart-modal-field">
                 <label>👤 Nombre:</label>
                 <input type="text" id="customerName" placeholder="Ej: Juan Pérez">
-            </div>
-            
-            <div class="cart-modal-field">
-                <label>📍 Dirección:</label>
-                <input type="text" id="customerAddress" placeholder="Calle, número, colonia">
             </div>
             
             <div class="cart-modal-field">
@@ -660,13 +760,9 @@
     <div id="adminPanel" class="admin-panel">
         <div class="admin-tabs">
             <button class="admin-tab active" data-admin-cat="productos">🌮 Productos</button>
-            <button class="admin-tab" data-admin-cat="guisados">🥘 Guisados</button>
-            <button class="admin-tab" data-admin-cat="complementos">🧅 Complementos gratis</button>
-            <button class="admin-tab" data-admin-cat="extras">💰 Extras con costo</button>
-            <button class="admin-tab" data-admin-cat="bebidas">🥤 Bebidas</button>
+            <button class="admin-tab" data-admin-cat="complementos">🧅 Complementos</button>
         </div>
 
-        <!-- Categorías de productos -->
         <div id="admin-productos" class="admin-category active">
             <div class="admin-list" id="productosAdminList"></div>
             <div class="admin-actions">
@@ -674,26 +770,18 @@
                 <button id="deleteProductosBtn">🗑️ Eliminar</button>
             </div>
             <div class="admin-add-form">
-                <input type="text" id="newProductoName" placeholder="Ej: Tostada">
+                <input type="text" id="newProductoNombre" placeholder="Nombre">
+                <input type="number" id="newProductoPrecio" placeholder="Precio">
+                <select id="newProductoTipo">
+                    <option value="normal">Normal</option>
+                    <option value="carne">Con carne</option>
+                    <option value="guisado">Con guisado</option>
+                    <option value="sencillo">Sencillo</option>
+                </select>
                 <button id="saveProductoBtn">Guardar</button>
             </div>
         </div>
 
-        <!-- Guisados -->
-        <div id="admin-guisados" class="admin-category">
-            <div class="admin-list" id="guisadosAdminList"></div>
-            <div class="admin-actions">
-                <button id="addGuisadoBtn">➕ Agregar</button>
-                <button id="deleteGuisadosBtn">🗑️ Eliminar</button>
-            </div>
-            <div class="admin-add-form">
-                <input type="text" id="newGuisadoName" placeholder="Nombre">
-                <input type="number" id="newGuisadoPrice" placeholder="Precio">
-                <button id="saveGuisadoBtn">Guardar</button>
-            </div>
-        </div>
-
-        <!-- Complementos gratis -->
         <div id="admin-complementos" class="admin-category">
             <div class="admin-list" id="complementosAdminList"></div>
             <div class="admin-actions">
@@ -701,36 +789,17 @@
                 <button id="deleteComplementosBtn">🗑️ Eliminar</button>
             </div>
             <div class="admin-add-form">
-                <input type="text" id="newComplementoName" placeholder="Ej: Cebolla">
+                <input type="text" id="newComplementoNombre" placeholder="Ej: Cebolla">
+                <select id="newComplementoCategoria">
+                    <option value="Quesadilla">Quesadilla</option>
+                    <option value="Gordita">Gordita</option>
+                    <option value="Huarache">Huarache</option>
+                    <option value="Tostada">Tostada</option>
+                    <option value="Pambazo">Pambazo</option>
+                    <option value="Taco">Taco</option>
+                    <option value="Sope">Sope</option>
+                </select>
                 <button id="saveComplementoBtn">Guardar</button>
-            </div>
-        </div>
-
-        <!-- Extras con costo -->
-        <div id="admin-extras" class="admin-category">
-            <div class="admin-list" id="extrasAdminList"></div>
-            <div class="admin-actions">
-                <button id="addExtraBtn">➕ Agregar</button>
-                <button id="deleteExtrasBtn">🗑️ Eliminar</button>
-            </div>
-            <div class="admin-add-form">
-                <input type="text" id="newExtraName" placeholder="Ej: Queso extra">
-                <input type="number" id="newExtraPrice" placeholder="Precio">
-                <button id="saveExtraBtn">Guardar</button>
-            </div>
-        </div>
-
-        <!-- Bebidas -->
-        <div id="admin-bebidas" class="admin-category">
-            <div class="admin-list" id="bebidasAdminList"></div>
-            <div class="admin-actions">
-                <button id="addBebidaBtn">➕ Agregar</button>
-                <button id="deleteBebidasBtn">🗑️ Eliminar</button>
-            </div>
-            <div class="admin-add-form">
-                <input type="text" id="newBebidaName" placeholder="Nombre">
-                <input type="number" id="newBebidaPrice" placeholder="Precio">
-                <button id="saveBebidaBtn">Guardar</button>
             </div>
         </div>
     </div>
@@ -738,310 +807,253 @@
     <!-- Contenido principal -->
     <div class="main-content">
         <div class="flow-section">
-            <!-- Pantalla 1: Menú -->
+            <!-- Pantalla única: Productos -->
             <div id="screenMenu" class="screen active">
-                <h2>¿Qué antojas? 🌮</h2>
-                <div class="category-grid" id="categoryGrid"></div>
-            </div>
-
-            <!-- Pantalla 2: Guisados -->
-            <div id="screenGuisado" class="screen">
-                <h2 id="guisadoTitle">Elige guisado para <span id="categoriaElegida"></span></h2>
-                <div id="guisadosList"></div>
-                <button class="btn-secundario" id="backToMenuBtn">← Volver</button>
-            </div>
-
-            <!-- Pantalla 3: Personalización -->
-            <div id="screenPersonalizacion" class="screen">
-                <h2 id="personalizacionTitle"></h2>
-                <div id="personalizacionContainer"></div>
-                <button class="btn-principal" id="addToCartBtn">➕ Agregar al carrito</button>
-                <button class="btn-secundario" id="backToGuisadoBtn">← Elegir otro</button>
+                <h2>¿Qué se te antoja? 🌮</h2>
+                <div class="productos-grid" id="productosGrid"></div>
             </div>
         </div>
     </div>
-    <footer>Antojitos Elvia © 2024</footer>
+    <footer>Antojitos Elvia © 2026</footer>
 </div>
 
 <script>
     (function() {
-        // ========== DATOS GLOBALES ==========
-        let categoriasProductos = ['Huarache', 'Quesadilla', 'Gordita', 'Pambazo', 'Taco', 'Tostada'];
-        
-        let guisados = [
-            { nombre: "Tinga de res", precio: 25 },
-            { nombre: "Tinga de pollo", precio: 25 },
-            { nombre: "Chicharrón", precio: 27 },
-            { nombre: "Picadillo", precio: 25 },
-            { nombre: "Costilla de res", precio: 30 },
-            { nombre: "Suadero", precio: 28 },
-            { nombre: "Pancita", precio: 32 },
-            { nombre: "Huitlacoche", precio: 30 }
-        ];
+        // ========== DATOS ==========
+        const complementosPorProducto = {
+            'Quesadilla': ['Lechuga', 'Queso', 'Crema', 'Salsa verde', 'Salsa roja'],
+            'Gordita': ['Cebolla', 'Cilantro', 'Lechuga', 'Nopales', 'Queso', 'Salsa verde', 'Salsa roja'],
+            'Huarache': ['Cebolla', 'Cilantro', 'Queso', 'Lechuga', 'Nopales', 'Salsa verde', 'Salsa roja'],
+            'Tostada': ['Lechuga', 'Queso', 'Crema', 'Salsa verde', 'Salsa roja'],
+            'Pambazo': ['Lechuga', 'Queso', 'Crema', 'Salsa verde', 'Salsa roja'],
+            'Taco': ['Cebolla', 'Cilantro', 'Salsa verde', 'Salsa roja'],
+            'Sope': ['Lechuga', 'Queso', 'Crema', 'Cebolla', 'Cilantro', 'Salsa verde', 'Salsa roja']
+        };
 
-        let bebidas = [
-            { nombre: "Coca-Cola", precio: 18 },
-            { nombre: "Jarritos", precio: 16 }
-        ];
-
-        let complementosGratis = [
-            "Lechuga", "Cilantro", "Cebolla", "Salsa verde", "Salsa roja", "Crema"
-        ];
-
-        let extrasConCosto = [
-            { nombre: "Queso extra", precio: 10 },
-            { nombre: "Guisado extra", precio: 10 }
+        // Productos ordenados alfabéticamente (excepto bebidas al final)
+        let productos = [
+            // Gorditas
+            { nombre: 'Gordita', precio: 40, tipo: 'carne', descripcion: 'c/Carne' },
+            { nombre: 'Gordita', precio: 30, tipo: 'guisado', descripcion: 'c/Guisado' },
+            
+            // Huaraches
+            { nombre: 'Huarache', precio: 70, tipo: 'carne', descripcion: 'c/Carne' },
+            { nombre: 'Huarache', precio: 60, tipo: 'guisado', descripcion: 'c/Guisado' },
+            { nombre: 'Huarache', precio: 45, tipo: 'sencillo', descripcion: 'Sencillo' },
+            
+            // Pambazo
+            { nombre: 'Pambazo', precio: 30, tipo: 'normal' },
+            
+            // Quesadilla
+            { nombre: 'Quesadilla', precio: 30, tipo: 'normal' },
+            
+            // Sopes
+            { nombre: 'Sope', precio: 40, tipo: 'carne', descripcion: 'c/Carne' },
+            { nombre: 'Sope', precio: 30, tipo: 'guisado', descripcion: 'c/Guisado' },
+            
+            // Tacos
+            { nombre: 'Taco', precio: 30, tipo: 'normal' },
+            
+            // Tostada
+            { nombre: 'Tostada', precio: 30, tipo: 'normal' },
+            
+            // Bebidas (siempre al final)
+            { nombre: 'Coca-Cola 500ml', precio: 28, tipo: 'bebida' },
+            { nombre: 'Jarrito 600ml', precio: 23, tipo: 'bebida' }
         ];
 
         let carrito = [];
-        let currentCategory = '';
-        let selectedGuisado = null;
+        let productoSeleccionado = null;
+        let cantidadSeleccionada = 1;
         let adminActivo = false;
 
         // ========== FUNCIONES ==========
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
+        function renderProductos() {
+            const grid = document.getElementById('productosGrid');
+            grid.innerHTML = '';
+
+            productos.forEach((prod, index) => {
+                const card = document.createElement('div');
+                card.className = 'producto-card';
+                card.dataset.index = index;
+                
+                let nombreMostrar = prod.nombre;
+                if (prod.descripcion) {
+                    nombreMostrar += ' ' + prod.descripcion;
+                } else if (prod.tipo === 'carne') {
+                    nombreMostrar += ' c/Carne';
+                } else if (prod.tipo === 'guisado') {
+                    nombreMostrar += ' c/Guisado';
+                }
+                
+                card.innerHTML = `
+                    <span>${nombreMostrar}</span>
+                    <span class="precio">$${prod.precio}</span>
+                `;
+                
+                card.addEventListener('click', () => {
+                    if (prod.tipo === 'bebida') {
+                        // Las bebidas se agregan directo
+                        for (let i = 0; i < cantidadSeleccionada; i++) {
+                            carrito.push({ 
+                                nombre: prod.nombre, 
+                                precio: prod.precio 
+                            });
+                        }
+                        updateCartCount();
+                    } else {
+                        // Abrir modal de complementos
+                        productoSeleccionado = prod;
+                        cantidadSeleccionada = 1;
+                        document.getElementById('cantidadValue').textContent = '1';
+                        abrirComplementos(prod.nombre);
+                    }
+                });
+                
+                grid.appendChild(card);
+            });
         }
+
+        function abrirComplementos(nombreProducto) {
+            const container = document.getElementById('complementosContainer');
+            const title = document.getElementById('complementosTitle');
+            
+            // Obtener complementos específicos del producto
+            let complementos = [];
+            if (nombreProducto.includes('Quesadilla')) {
+                complementos = complementosPorProducto.Quesadilla;
+            } else if (nombreProducto.includes('Gordita')) {
+                complementos = complementosPorProducto.Gordita;
+            } else if (nombreProducto.includes('Huarache')) {
+                complementos = complementosPorProducto.Huarache;
+            } else if (nombreProducto.includes('Tostada')) {
+                complementos = complementosPorProducto.Tostada;
+            } else if (nombreProducto.includes('Pambazo')) {
+                complementos = complementosPorProducto.Pambazo;
+            } else if (nombreProducto.includes('Taco')) {
+                complementos = complementosPorProducto.Taco;
+            } else if (nombreProducto.includes('Sope')) {
+                complementos = complementosPorProducto.Sope;
+            }
+            
+            title.textContent = `Personaliza tu ${nombreProducto}`;
+            
+            container.innerHTML = '';
+            complementos.forEach(comp => {
+                const label = document.createElement('label');
+                label.className = 'complemento-item';
+                label.innerHTML = `
+                    <input type="checkbox" class="complemento-check" checked>
+                    <span>${comp}</span>
+                `;
+                container.appendChild(label);
+            });
+            
+            document.getElementById('complementosModal').classList.add('show');
+        }
+
+        // Eventos de cantidad
+        document.getElementById('cantidadMas').addEventListener('click', () => {
+            cantidadSeleccionada++;
+            document.getElementById('cantidadValue').textContent = cantidadSeleccionada;
+        });
+        
+        document.getElementById('cantidadMenos').addEventListener('click', () => {
+            if (cantidadSeleccionada > 1) {
+                cantidadSeleccionada--;
+                document.getElementById('cantidadValue').textContent = cantidadSeleccionada;
+            }
+        });
+
+        document.getElementById('agregarAlCarrito').addEventListener('click', () => {
+            if (!productoSeleccionado) return;
+
+            const complementos = [];
+            document.querySelectorAll('.complemento-check:checked').forEach(cb => {
+                complementos.push(cb.nextElementSibling.textContent);
+            });
+
+            const complementosStr = complementos.length ? ' con ' + complementos.join(', ') : '';
+
+            for (let i = 0; i < cantidadSeleccionada; i++) {
+                let nombre = productoSeleccionado.nombre;
+                if (productoSeleccionado.descripcion) {
+                    nombre += ' ' + productoSeleccionado.descripcion;
+                } else if (productoSeleccionado.tipo === 'carne') {
+                    nombre += ' c/Carne';
+                } else if (productoSeleccionado.tipo === 'guisado') {
+                    nombre += ' c/Guisado';
+                }
+                nombre += complementosStr;
+                
+                carrito.push({
+                    nombre: nombre,
+                    precio: productoSeleccionado.precio
+                });
+            }
+
+            updateCartCount();
+            document.getElementById('complementosModal').classList.remove('show');
+            productoSeleccionado = null;
+        });
+
+        document.getElementById('cerrarComplementos').addEventListener('click', () => {
+            document.getElementById('complementosModal').classList.remove('show');
+            productoSeleccionado = null;
+        });
 
         function updateCartCount() {
             document.getElementById('cartCount').textContent = carrito.length;
         }
 
-        function renderMenu() {
-            const grid = document.getElementById('categoryGrid');
-            grid.innerHTML = '';
-            [...categoriasProductos, 'Refresco'].forEach(cat => {
-                const div = document.createElement('div');
-                div.className = 'category-card';
-                div.dataset.cat = cat;
-                div.textContent = cat === 'Refresco' ? '🥤 Refrescos' : cat;
-                grid.appendChild(div);
-            });
-
-            document.querySelectorAll('.category-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    currentCategory = card.dataset.cat;
-                    if (currentCategory === 'Refresco') {
-                        showScreen('screenGuisado');
-                        document.getElementById('categoriaElegida').innerText = 'Refresco';
-                        renderBebidas();
-                    } else {
-                        showScreen('screenGuisado');
-                        document.getElementById('categoriaElegida').innerText = currentCategory;
-                        renderGuisados();
-                    }
-                });
-            });
-        }
-
-        function renderGuisados() {
-            const container = document.getElementById('guisadosList');
-            container.innerHTML = '';
-            guisados.forEach((g, index) => {
-                const div = document.createElement('div');
-                div.className = 'guisado-item';
-                div.innerHTML = `
-                    <span class="guisado-nombre">${g.nombre}</span>
-                    <span class="guisado-precio">$${g.precio}</span>
-                    <div class="cantidad-control">
-                        <button class="cantidad-menos" data-index="${index}">-</button>
-                        <span id="cantidad-${index}">1</span>
-                        <button class="cantidad-mas" data-index="${index}">+</button>
-                    </div>
-                    <button class="btn-seleccionar seleccionar-guisado" data-index="${index}">Elegir</button>
-                `;
-                container.appendChild(div);
-            });
-
-            document.querySelectorAll('.cantidad-mas').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = e.target.dataset.index;
-                    const span = document.getElementById(`cantidad-${idx}`);
-                    span.innerText = parseInt(span.innerText) + 1;
-                });
-            });
-            document.querySelectorAll('.cantidad-menos').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = e.target.dataset.index;
-                    const span = document.getElementById(`cantidad-${idx}`);
-                    let val = parseInt(span.innerText);
-                    if (val > 1) span.innerText = val - 1;
-                });
-            });
-
-            document.querySelectorAll('.seleccionar-guisado').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = e.target.dataset.index;
-                    const cantidad = parseInt(document.getElementById(`cantidad-${idx}`).innerText);
-                    selectedGuisado = { ...guisados[idx], cantidad };
-                    showScreen('screenPersonalizacion');
-                    renderPersonalizacion();
-                });
-            });
-        }
-
-        function renderPersonalizacion() {
-            const container = document.getElementById('personalizacionContainer');
-            document.getElementById('personalizacionTitle').textContent = 
-                `${currentCategory} de ${selectedGuisado.nombre}`;
-
-            let html = `
-                <div class="personalizacion-section">
-                    <div class="complementos-gratis">
-                        <h3>🌿 Complementos sin costo</h3>
-                        <div class="complementos-grid">
-            `;
-
-            complementosGratis.forEach((comp, index) => {
-                html += `
-                    <label class="complemento-item-gratis">
-                        <input type="checkbox" class="comp-gratis" data-index="${index}">
-                        <span>${comp}</span>
-                    </label>
-                `;
-            });
-
-            html += `
-                        </div>
-                    </div>
-                    
-                    <div class="extras-costo">
-                        <h3>💰 Extras con costo ($10 c/u)</h3>
-            `;
-
-            for (let i = 0; i < selectedGuisado.cantidad; i++) {
-                html += `
-                    <div class="extra-item">
-                        <span>#${i+1}:</span>
-                        <select class="extra-select" data-item="${i}">
-                            <option value="ninguno">Sin extra</option>
-                `;
-                extrasConCosto.forEach((extra, idx) => {
-                    html += `<option value="${extra.nombre}|${extra.precio}">${extra.nombre} - $${extra.precio}</option>`;
-                });
-                html += `
-                        </select>
-                    </div>
-                `;
-            }
-
-            html += `
-                    </div>
-                </div>
-            `;
-
-            container.innerHTML = html;
-        }
-
-        function renderBebidas() {
-            const container = document.getElementById('guisadosList');
-            container.innerHTML = '';
-            bebidas.forEach((b, index) => {
-                const div = document.createElement('div');
-                div.className = 'guisado-item';
-                div.innerHTML = `
-                    <span class="guisado-nombre">${b.nombre}</span>
-                    <span class="guisado-precio">$${b.precio}</span>
-                    <div class="cantidad-control">
-                        <button class="cantidad-menos-b" data-index="${index}">-</button>
-                        <span id="cantidad-b-${index}">1</span>
-                        <button class="cantidad-mas-b" data-index="${index}">+</button>
-                    </div>
-                    <button class="btn-seleccionar seleccionar-bebida" data-index="${index}">Agregar</button>
-                `;
-                container.appendChild(div);
-            });
-
-            document.querySelectorAll('.cantidad-mas-b').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = e.target.dataset.index;
-                    const span = document.getElementById(`cantidad-b-${idx}`);
-                    span.innerText = parseInt(span.innerText) + 1;
-                });
-            });
-            document.querySelectorAll('.cantidad-menos-b').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = e.target.dataset.index;
-                    const span = document.getElementById(`cantidad-b-${idx}`);
-                    let val = parseInt(span.innerText);
-                    if (val > 1) span.innerText = val - 1;
-                });
-            });
-
-            document.querySelectorAll('.seleccionar-bebida').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = e.target.dataset.index;
-                    const cantidad = parseInt(document.getElementById(`cantidad-b-${idx}`).innerText);
-                    const bebida = bebidas[idx];
-                    for (let i = 0; i < cantidad; i++) {
-                        carrito.push({ nombre: bebida.nombre, precio: bebida.precio });
-                    }
-                    updateCartCount();
-                    showScreen('screenMenu');
-                });
-            });
-        }
-
-        document.getElementById('addToCartBtn').addEventListener('click', () => {
-            if (!selectedGuisado) return;
-
-            const complementos = [];
-            document.querySelectorAll('.comp-gratis:checked').forEach(cb => {
-                complementos.push(complementosGratis[cb.dataset.index]);
-            });
-
-            const extras = [];
-            document.querySelectorAll('.extra-select').forEach(select => {
-                if (select.value !== 'ninguno') {
-                    const [nombre, precio] = select.value.split('|');
-                    extras.push({ nombre, precio: parseInt(precio) });
-                }
-            });
-
-            const complementosStr = complementos.length ? ' con ' + complementos.join(', ') : '';
-
-            for (let i = 0; i < selectedGuisado.cantidad; i++) {
-                let nombre = `${currentCategory} de ${selectedGuisado.nombre}${complementosStr}`;
-                let precio = selectedGuisado.precio;
-
-                if (i < extras.length) {
-                    nombre += ` + ${extras[i].nombre}`;
-                    precio += extras[i].precio;
-                }
-
-                carrito.push({ nombre, precio });
-            }
-
-            updateCartCount();
-            selectedGuisado = null;
-            showScreen('screenMenu');
-        });
-
-        document.getElementById('backToMenuBtn').addEventListener('click', () => showScreen('screenMenu'));
-        document.getElementById('backToGuisadoBtn').addEventListener('click', () => {
-            showScreen('screenGuisado');
-            currentCategory === 'Refresco' ? renderBebidas() : renderGuisados();
-        });
-
         // ========== MODAL DEL CARRITO ==========
         const cartModal = document.getElementById('cartModal');
         const cartIcon = document.getElementById('cartIcon');
+        const propinaInput = document.getElementById('propinaInput');
+        const pagoInput = document.getElementById('pagoInput');
+        const cambioInfo = document.getElementById('cambioInfo');
         
+        function calcularSubtotal() {
+            return carrito.reduce((acc, i) => acc + i.precio, 0);
+        }
+
+        function calcularPropina() {
+            const valor = parseFloat(propinaInput.value);
+            if (!isNaN(valor) && valor > 0) return valor;
+            
+            // Si está vacío, calcular 10% del subtotal
+            const subtotal = calcularSubtotal();
+            return Math.round(subtotal * 0.1);
+        }
+
+        function calcularTotal() {
+            return calcularSubtotal() + calcularPropina();
+        }
+
+        function actualizarTotalYCambio() {
+            const total = calcularTotal();
+            document.getElementById('cartModalTotal').textContent = `Total: $${total}`;
+            
+            // Actualizar placeholder de propina con 10%
+            const subtotal = calcularSubtotal();
+            propinaInput.placeholder = `${Math.round(subtotal * 0.1)} (10%)`;
+            
+            const pago = parseFloat(pagoInput.value) || 0;
+            const cambio = pago - total;
+            cambioInfo.textContent = `Cambio: $${cambio >= 0 ? cambio : 0}`;
+        }
+
         function renderCartModal() {
             const itemsList = document.getElementById('cartModalItems');
-            const totalSpan = document.getElementById('cartModalTotal');
             
             if (carrito.length === 0) {
-                itemsList.innerHTML = '<li style="text-align:center; color:#718096;">Carrito vacío</li>';
-                totalSpan.textContent = 'Total: $0';
+                itemsList.innerHTML = '<li style="text-align:center; color:#718096; padding:1rem 0;">Carrito vacío</li>';
+                document.getElementById('cartModalTotal').textContent = 'Total: $0';
                 return;
             }
 
             let html = '';
-            let total = 0;
             carrito.forEach((item, idx) => {
-                total += item.precio;
                 html += `<li class="cart-modal-item">
                     <span>${item.nombre}</span>
                     <span>
@@ -1051,7 +1063,8 @@
                 </li>`;
             });
             itemsList.innerHTML = html;
-            totalSpan.textContent = `Total: $${total}`;
+            
+            actualizarTotalYCambio();
         }
 
         window.eliminarDelCarrito = (idx) => {
@@ -1060,14 +1073,43 @@
             renderCartModal();
         };
 
+        propinaInput.addEventListener('input', actualizarTotalYCambio);
+        pagoInput.addEventListener('input', actualizarTotalYCambio);
+
+        // Opciones de entrega
+        const recogerRadio = document.getElementById('recogerRadio');
+        const domicilioRadio = document.getElementById('domicilioRadio');
+        const direccionField = document.getElementById('direccionField');
+
+        function toggleDireccionField() {
+            if (domicilioRadio.checked) {
+                direccionField.classList.remove('hidden');
+            } else {
+                direccionField.classList.add('hidden');
+            }
+        }
+
+        recogerRadio.addEventListener('change', toggleDireccionField);
+        domicilioRadio.addEventListener('change', toggleDireccionField);
+
         cartIcon.addEventListener('click', () => {
             renderCartModal();
             cartModal.classList.add('show');
+            recogerRadio.checked = true;
+            toggleDireccionField();
+            propinaInput.value = '';
+            pagoInput.value = '0';
+            actualizarTotalYCambio();
         });
 
         document.getElementById('closeCartModal').addEventListener('click', () => {
             cartModal.classList.remove('show');
         });
+
+        function reiniciarPedido() {
+            carrito = [];
+            updateCartCount();
+        }
 
         document.getElementById('confirmCart').addEventListener('click', () => {
             if (carrito.length === 0) {
@@ -1076,26 +1118,67 @@
             }
 
             const nombre = document.getElementById('customerName').value.trim();
-            const direccion = document.getElementById('customerAddress').value.trim();
             
-            if (!nombre || !direccion) {
-                alert('Ingresa tu nombre y dirección');
+            if (!nombre) {
+                alert('Ingresa tu nombre');
+                return;
+            }
+
+            if (domicilioRadio.checked) {
+                const direccion = document.getElementById('customerAddress').value.trim();
+                if (!direccion) {
+                    alert('Ingresa la dirección de entrega');
+                    return;
+                }
+            }
+
+            const subtotal = calcularSubtotal();
+            const propina = calcularPropina();
+            const total = subtotal + propina;
+            const pago = parseFloat(pagoInput.value) || 0;
+            
+            if (pago < total) {
+                alert('El pago es insuficiente');
                 return;
             }
 
             let msg = "🍽️ *Pedido Antojitos Elvia* 🍽️%0A%0A";
             msg += `👤 *Nombre:* ${nombre}%0A`;
-            msg += `📍 *Dirección:* ${direccion}%0A%0A`;
-            msg += `*Pedido:*%0A`;
+            
+            if (domicilioRadio.checked) {
+                const direccion = document.getElementById('customerAddress').value.trim();
+                msg += `📍 *Dirección:* ${direccion}%0A`;
+                msg += `🚚 *Tipo:* Entrega a domicilio%0A`;
+            } else {
+                msg += `📍 *Tipo:* Recoger en sitio%0A`;
+            }
+            
+            msg += `%0A*Pedido:*%0A`;
             
             carrito.forEach(i => msg += `• ${i.nombre}: $${i.precio}%0A`);
-            const total = carrito.reduce((acc, i) => acc + i.precio, 0);
-            msg += `%0A*TOTAL: $${total}*%0A`;
+            
+            msg += `%0A*Subtotal: $${subtotal}*%0A`;
+            if (propina > 0) {
+                msg += `*Propina: $${propina}*%0A`;
+            }
+            msg += `*TOTAL: $${total}*%0A`;
+            
+            msg += `*Paga con: $${pago}*%0A`;
+            msg += `*Cambio: $${pago - total}*%0A`;
             
             const coment = document.getElementById('customerComments').value.trim();
             if (coment) msg += `%0A📝 *Comentarios:* ${coment}%0A`;
             
             window.open(`https://wa.me/5613647545?text=${msg}`, '_blank');
+            
+            reiniciarPedido();
+            cartModal.classList.remove('show');
+            
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerAddress').value = '';
+            document.getElementById('customerComments').value = '';
+            recogerRadio.checked = true;
+            toggleDireccionField();
         });
 
         // ========== ADMIN ==========
@@ -1141,148 +1224,78 @@
         function renderAdminLists() {
             const prodList = document.getElementById('productosAdminList');
             prodList.innerHTML = '';
-            categoriasProductos.forEach((cat, idx) => {
+            productos.forEach((prod, idx) => {
                 prodList.innerHTML += `
                     <div class="admin-item">
-                        <label><input type="checkbox" class="prod-check" value="${idx}"> ${cat}</label>
+                        <label><input type="checkbox" class="prod-check" value="${idx}"> ${prod.nombre} ${prod.descripcion || ''} - $${prod.precio}</label>
                         <div class="item-controls"><button onclick="editarProducto(${idx})">✏️</button></div>
-                    </div>
-                `;
-            });
-
-            const guisadoList = document.getElementById('guisadosAdminList');
-            guisadoList.innerHTML = '';
-            guisados.forEach((g, idx) => {
-                guisadoList.innerHTML += `
-                    <div class="admin-item">
-                        <label><input type="checkbox" class="guisado-check" value="${idx}"> ${g.nombre} - $${g.precio}</label>
-                        <div class="item-controls"><button onclick="editarGuisado(${idx})">✏️</button></div>
                     </div>
                 `;
             });
 
             const compList = document.getElementById('complementosAdminList');
             compList.innerHTML = '';
-            complementosGratis.forEach((c, idx) => {
-                compList.innerHTML += `
-                    <div class="admin-item">
-                        <label><input type="checkbox" class="comp-check-admin" value="${idx}"> ${c}</label>
-                        <div class="item-controls"><button onclick="editarComplemento(${idx})">✏️</button></div>
-                    </div>
-                `;
-            });
-
-            const extrasList = document.getElementById('extrasAdminList');
-            extrasList.innerHTML = '';
-            extrasConCosto.forEach((e, idx) => {
-                extrasList.innerHTML += `
-                    <div class="admin-item">
-                        <label><input type="checkbox" class="extra-check-admin" value="${idx}"> ${e.nombre} - $${e.precio}</label>
-                        <div class="item-controls"><button onclick="editarExtra(${idx})">✏️</button></div>
-                    </div>
-                `;
-            });
-
-            const bebList = document.getElementById('bebidasAdminList');
-            bebList.innerHTML = '';
-            bebidas.forEach((b, idx) => {
-                bebList.innerHTML += `
-                    <div class="admin-item">
-                        <label><input type="checkbox" class="bebida-check" value="${idx}"> ${b.nombre} - $${b.precio}</label>
-                        <div class="item-controls"><button onclick="editarBebida(${idx})">✏️</button></div>
-                    </div>
-                `;
-            });
+            // Mostrar complementos agrupados por producto
+            for (let [producto, comps] of Object.entries(complementosPorProducto)) {
+                comps.forEach((comp, idx) => {
+                    compList.innerHTML += `
+                        <div class="admin-item">
+                            <label>${producto}: ${comp}</label>
+                        </div>
+                    `;
+                });
+            }
         }
 
         window.editarProducto = (idx) => {
-            const nuevo = prompt('Editar:', categoriasProductos[idx]);
-            if (nuevo) categoriasProductos[idx] = nuevo;
-            renderAdminLists(); renderMenu();
-        };
-        window.editarGuisado = (idx) => {
-            const nombre = prompt('Nombre:', guisados[idx].nombre);
-            const precio = prompt('Precio:', guisados[idx].precio);
-            if (nombre && precio) guisados[idx] = { nombre, precio: parseFloat(precio) };
-            renderAdminLists();
-        };
-        window.editarComplemento = (idx) => {
-            const nuevo = prompt('Nombre:', complementosGratis[idx]);
-            if (nuevo) complementosGratis[idx] = nuevo;
-            renderAdminLists();
-        };
-        window.editarExtra = (idx) => {
-            const nombre = prompt('Nombre:', extrasConCosto[idx].nombre);
-            const precio = prompt('Precio:', extrasConCosto[idx].precio);
-            if (nombre && precio) extrasConCosto[idx] = { nombre, precio: parseFloat(precio) };
-            renderAdminLists();
-        };
-        window.editarBebida = (idx) => {
-            const nombre = prompt('Nombre:', bebidas[idx].nombre);
-            const precio = prompt('Precio:', bebidas[idx].precio);
-            if (nombre && precio) bebidas[idx] = { nombre, precio: parseFloat(precio) };
-            renderAdminLists();
+            const nuevoPrecio = prompt('Nuevo precio:', productos[idx].precio);
+            if (nuevoPrecio) {
+                productos[idx].precio = parseFloat(nuevoPrecio);
+                renderAdminLists();
+                renderProductos();
+            }
         };
 
-        // Botones de admin
         document.getElementById('saveProductoBtn').addEventListener('click', () => {
-            const name = document.getElementById('newProductoName').value.trim();
-            if (name) { categoriasProductos.push(name); renderAdminLists(); renderMenu(); }
-        });
-        document.getElementById('saveGuisadoBtn').addEventListener('click', () => {
-            const name = document.getElementById('newGuisadoName').value.trim();
-            const price = parseFloat(document.getElementById('newGuisadoPrice').value);
-            if (name && !isNaN(price)) { guisados.push({ nombre: name, precio: price }); renderAdminLists(); }
-        });
-        document.getElementById('saveComplementoBtn').addEventListener('click', () => {
-            const name = document.getElementById('newComplementoName').value.trim();
-            if (name) { complementosGratis.push(name); renderAdminLists(); }
-        });
-        document.getElementById('saveExtraBtn').addEventListener('click', () => {
-            const name = document.getElementById('newExtraName').value.trim();
-            const price = parseFloat(document.getElementById('newExtraPrice').value);
-            if (name && !isNaN(price)) { extrasConCosto.push({ nombre: name, precio: price }); renderAdminLists(); }
-        });
-        document.getElementById('saveBebidaBtn').addEventListener('click', () => {
-            const name = document.getElementById('newBebidaName').value.trim();
-            const price = parseFloat(document.getElementById('newBebidaPrice').value);
-            if (name && !isNaN(price)) { bebidas.push({ nombre: name, precio: price }); renderAdminLists(); }
+            const nombre = document.getElementById('newProductoNombre').value.trim();
+            const precio = parseFloat(document.getElementById('newProductoPrecio').value);
+            const tipo = document.getElementById('newProductoTipo').value;
+            
+            if (nombre && !isNaN(precio)) {
+                let nuevoProducto = { nombre, precio, tipo };
+                if (tipo === 'carne') nuevoProducto.descripcion = 'c/Carne';
+                if (tipo === 'guisado') nuevoProducto.descripcion = 'c/Guisado';
+                if (tipo === 'sencillo') nuevoProducto.descripcion = 'Sencillo';
+                
+                productos.push(nuevoProducto);
+                renderAdminLists();
+                renderProductos();
+            }
         });
 
-        // Eliminar
+        document.getElementById('saveComplementoBtn').addEventListener('click', () => {
+            const nombre = document.getElementById('newComplementoNombre').value.trim();
+            const categoria = document.getElementById('newComplementoCategoria').value;
+            
+            if (nombre && categoria) {
+                if (!complementosPorProducto[categoria]) {
+                    complementosPorProducto[categoria] = [];
+                }
+                complementosPorProducto[categoria].push(nombre);
+                renderAdminLists();
+            }
+        });
+
         document.getElementById('deleteProductosBtn').addEventListener('click', () => {
             const checks = document.querySelectorAll('.prod-check:checked');
             const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
-            indices.forEach(i => categoriasProductos.splice(i, 1));
-            renderAdminLists(); renderMenu();
-        });
-        document.getElementById('deleteGuisadosBtn').addEventListener('click', () => {
-            const checks = document.querySelectorAll('.guisado-check:checked');
-            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
-            indices.forEach(i => guisados.splice(i, 1));
+            indices.forEach(i => productos.splice(i, 1));
             renderAdminLists();
-        });
-        document.getElementById('deleteComplementosBtn').addEventListener('click', () => {
-            const checks = document.querySelectorAll('.comp-check-admin:checked');
-            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
-            indices.forEach(i => complementosGratis.splice(i, 1));
-            renderAdminLists();
-        });
-        document.getElementById('deleteExtrasBtn').addEventListener('click', () => {
-            const checks = document.querySelectorAll('.extra-check-admin:checked');
-            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
-            indices.forEach(i => extrasConCosto.splice(i, 1));
-            renderAdminLists();
-        });
-        document.getElementById('deleteBebidasBtn').addEventListener('click', () => {
-            const checks = document.querySelectorAll('.bebida-check:checked');
-            const indices = [...checks].map(c => parseInt(c.value)).sort((a,b) => b-a);
-            indices.forEach(i => bebidas.splice(i, 1));
-            renderAdminLists();
+            renderProductos();
         });
 
-        // Inicialización
-        renderMenu();
+        // ========== INICIALIZACIÓN ==========
+        renderProductos();
         updateCartCount();
     })();
 </script>
