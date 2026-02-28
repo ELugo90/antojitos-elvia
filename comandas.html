@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antojitos Elvia 🏠 - Sistema de Comandas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: #f8f4ec;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .app-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: transparent;
+            padding: 0.5rem;
+        }
+
+        /* Header fijo */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            max-height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .admin-text {
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: underline dotted #e53e3e;
+            transition: color 0.2s;
+        }
+        .admin-text:hover {
+            color: #e53e3e;
+        }
+
+        /* Pantalla principal - Comandas */
+        .comandas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .comandas-header h1 {
+            font-size: 2rem;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .btn-nueva-comanda {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+            transition: all 0.2s;
+        }
+        .btn-nueva-comanda:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(229, 62, 62, 0.4);
+        }
+
+        /* Grid de comandas */
+        .comandas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .comanda-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .comanda-card:hover {
+            border-color: #e53e3e;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(229, 62, 62, 0.15);
+        }
+
+        .comanda-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .comanda-folio {
+            background: #e53e3e;
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .comanda-cliente {
+            background: #e2e8f0;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .comanda-items {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding-right: 0.5rem;
+        }
+        .comanda-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 0.9rem;
+        }
+        .comanda-item span:first-child {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .comanda-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e53e3e;
+            text-align: right;
+            margin: 1rem 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .comanda-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-editar {
+            flex: 2;
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-cobrar {
+            flex: 2;
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-eliminar {
+            flex: 1;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sin-comandas {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #a0aec0;
+            padding: 4rem;
+            font-size: 1.2rem;
+            background: white;
+            border-radius: 24px;
+            border: 2px dashed #e2e8f0;
+        }
+
+        /* Modal de comanda */
+        .comanda-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .comanda-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #e53e3e;
+        }
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: #1a1a1a;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .modal-close:hover {
+            background: #f0f0f0;
+            color: #e53e3e;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .modal-col h3 {
+            font-size: 1.2rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e53e3e;
+        }
+
+        .productos-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .producto-modal-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 0.8rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .producto-modal-btn:hover {
+            border-color: #e53e3e;
+            background: #fff0f0;
+        }
+        .producto-modal-btn .precio {
+            color: #e53e3e;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 0.2rem;
+        }
+
+        .guisados-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .guisado-modal-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 0.5rem 0.3rem;
+            text-align: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .guisado-modal-btn:hover {
+            border-color: #e53e3e;
+            background: #fff0f0;
+        }
+        .guisado-modal-btn.selected {
+            background: #e53e3e;
+            border-color: #e53e3e;
+            color: white;
+        }
+
+        .complementos-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .complemento-modal-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 0.4rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .complemento-modal-item input {
+            width: 0.9rem;
+            height: 0.9rem;
+            accent-color: #e53e3e;
+            cursor: pointer;
+        }
+        .complemento-modal-item span {
+            flex: 1;
+        }
+
+        .cantidad-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+        .cantidad-selector button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #e53e3e;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .cantidad-selector span {
+            font-size: 1.5rem;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .cliente-input {
+            margin: 1rem 0;
+        }
+        .cliente-input label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+        .cliente-input input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 2px solid #e2e8f0;
+        }
+        .modal-footer button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .btn-guardar {
+            background: #e53e3e;
+            color: white;
+        }
+        .btn-cancelar {
+            background: white;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        /* Modal de contraseña */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .password-modal.show {
+            display: flex;
+        }
+        .password-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+        }
+        .password-content h3 {
+            color: #1a1a1a;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .password-content input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+        .password-buttons {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+        .password-buttons button {
+            background: #e53e3e;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .password-buttons button:last-child {
+            background: white;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        footer {
+            text-align: center;
+            color: #a0aec0;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+            .comandas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-area">
+            <img src="logo.png" alt="Antojitos Elvia" class="logo-img" onerror="this.src='https://via.placeholder.com/150x50?text=Antojitos+Elvia'">
+        </div>
+        <div class="header-right">
+            <span class="admin-text" id="adminToggleBtn">Administrador</span>
+        </div>
+    </div>
+
+    <!-- Pantalla principal - Comandas -->
+    <div class="comandas-principal">
+        <div class="comandas-header">
+            <h1>🧾 Comandas Activas</h1>
+            <button class="btn-nueva-comanda" id="btnNuevaComanda">
+                ➕ Nueva Comanda
+            </button>
+        </div>
+
+        <div class="comandas-grid" id="comandasGrid">
+            <div class="sin-comandas">No hay comandas activas. Crea una nueva.</div>
+        </div>
+    </div>
+
+    <!-- Modal de comanda -->
+    <div id="comandaModal" class="comanda-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nueva Comanda</h2>
+                <button class="modal-close" id="cerrarModal">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Columna izquierda: Productos -->
+                <div class="modal-col">
+                    <h3>📋 Productos</h3>
+                    <div class="productos-modal-grid" id="productosModalGrid"></div>
+                    
+                    <h3>🥘 Guisados</h3>
+                    <div class="guisados-modal-grid" id="guisadosModalGrid"></div>
+                </div>
+
+                <!-- Columna derecha: Complementos y cantidad -->
+                <div class="modal-col">
+                    <h3>🌿 Complementos</h3>
+                    <div class="complementos-modal-grid" id="complementosModalGrid"></div>
+                    
+                    <div class="cantidad-selector">
+                        <button id="modalCantidadMenos">-</button>
+                        <span id="modalCantidad">1</span>
+                        <button id="modalCantidadMas">+</button>
+                    </div>
+
+                    <div class="cliente-input">
+                        <label>👤 Cliente (opcional):</label>
+                        <input type="text" id="clienteInput" placeholder="Nombre del cliente">
+                    </div>
+
+                    <button class="btn-guardar" id="agregarItemModal" style="width:100%; margin-top:1rem;">
+                        ➕ Agregar a comanda
+                    </button>
+                </div>
+            </div>
+
+            <!-- Items agregados temporalmente -->
+            <div style="margin-top: 2rem;">
+                <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">🛒 Items en esta comanda:</h3>
+                <ul id="itemsTempList" style="list-style:none; max-height:150px; overflow-y:auto; border:2px solid #e2e8f0; border-radius:12px; padding:0.5rem;"></ul>
+                <div style="text-align:right; font-weight:700; margin-top:0.5rem;" id="itemsTempTotal">Total: $0</div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-guardar" id="guardarComanda">✓ Guardar Comanda</button>
+                <button class="btn-cancelar" id="cancelarModal">✕ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de contraseña -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-content">
+            <h3>Acceso Administrador</h3>
+            <input type="password" id="adminPassword" placeholder="Contraseña">
+            <div class="password-buttons">
+                <button id="submitPassword">Entrar</button>
+                <button id="cancelPassword">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>Antojitos Elvia © 2026 - Sistema de Comandas</footer>
+</div>
+
+<script>
+    (function() {
+        // ========== DATOS (igual que el original) ==========
+        const complementosPorProducto = {
+            'Quesadilla': ['Lechuga', 'Queso', 'Crema', 'Salsa verde', 'Salsa roja'],
+            'Gordita': ['Cebolla', 'Cilantro', 'Lechuga', 'Nopales', 'Queso', 'Salsa verde', 'Salsa roja'],
+            'Huarache': ['Cebolla', 'Cilantro', 'Queso', 'Lechuga', 'Nopales', 'Salsa verde', 'Salsa roja'],
+            'Tostada': ['Lechuga', 'Queso', 'Crema', 'Salsa verde', 'Salsa roja'],
+            'Pambazo': ['Lechuga', 'Queso', 'Crema', 'Salsa verde', 'Salsa roja'],
+            'Taco': ['Cebolla', 'Cilantro', 'Salsa verde', 'Salsa roja'],
+            'Sope': ['Lechuga', 'Queso', 'Crema', 'Cebolla', 'Cilantro', 'Salsa verde', 'Salsa roja']
+        };
+
+        const guisadosDisponibles = [
+            { nombre: "Tinga de pollo", precio: 0 },
+            { nombre: "Tinga de res", precio: 0 },
+            { nombre: "Chicharrón", precio: 0 },
+            { nombre: "Picadillo", precio: 0 },
+            { nombre: "Pollo a la mexicana", precio: 0 },
+            { nombre: "Pancita a la mexicana", precio: 0 },
+            { nombre: "Rajas con queso", precio: 0 },
+            { nombre: "Papa con queso", precio: 0 },
+            { nombre: "Champiñones", precio: 0 },
+            { nombre: "Huitlacoche", precio: 0 },
+            { nombre: "Suadero", precio: 10 },
+            { nombre: "Bisteck", precio: 10 },
+            { nombre: "Longaniza", precio: 10 },
+            { nombre: "Campechano", precio: 10 }
+        ];
+
+        const productos = [
+            { nombre: 'Gordita', precio: 40, tipo: 'carne', descripcion: 'c/Carne' },
+            { nombre: 'Gordita', precio: 30, tipo: 'guisado', descripcion: 'c/Guisado' },
+            { nombre: 'Huarache', precio: 70, tipo: 'carne', descripcion: 'c/Carne' },
+            { nombre: 'Huarache', precio: 60, tipo: 'guisado', descripcion: 'c/Guisado' },
+            { nombre: 'Huarache', precio: 45, tipo: 'sencillo', descripcion: 'Sencillo' },
+            { nombre: 'Pambazo', precio: 30, tipo: 'normal' },
+            { nombre: 'Quesadilla', precio: 30, tipo: 'normal' },
+            { nombre: 'Sope', precio: 40, tipo: 'carne', descripcion: 'c/Carne' },
+            { nombre: 'Sope', precio: 30, tipo: 'guisado', descripcion: 'c/Guisado' },
+            { nombre: 'Taco', precio: 30, tipo: 'normal' },
+            { nombre: 'Tostada', precio: 30, tipo: 'normal' },
+            { nombre: 'Coca-Cola 500ml', precio: 28, tipo: 'bebida' },
+            { nombre: 'Jarrito 600ml', precio: 23, tipo: 'bebida' }
+        ];
+
+        // ========== ESTADO ==========
+        let comandas = [];
+        let contadorFolio = 1;
+        let adminActivo = false;
+        
+        // Estado del modal
+        let modalActivo = false;
+        let comandaEnEdicion = null;
+        let itemsTemp = [];
+        let productoSeleccionado = null;
+        let guisadoSeleccionado = null;
+        let complementosSeleccionados = [];
+        let cantidadSeleccionada = 1;
+
+        // ========== FUNCIONES DE RENDERIZADO ==========
+        function renderComandas() {
+            const grid = document.getElementById('comandasGrid');
+            
+            if (comandas.length === 0) {
+                grid.innerHTML = '<div class="sin-comandas">No hay comandas activas. Crea una nueva.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            comandas.sort((a, b) => a.folio - b.folio).forEach(comanda => {
+                const card = document.createElement('div');
+                card.className = 'comanda-card';
+                
+                const total = comanda.items.reduce((acc, item) => acc + item.precio, 0);
+                
+                let itemsHtml = '';
+                comanda.items.forEach(item => {
+                    itemsHtml += `
+                        <li class="comanda-item">
+                            <span>${item.nombre}</span>
+                            <span>$${item.precio}</span>
+                        </li>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="comanda-header">
+                        <span class="comanda-folio">F-${String(comanda.folio).padStart(3, '0')}</span>
+                        <span class="comanda-cliente">${comanda.cliente || 'Sin cliente'}</span>
+                    </div>
+                    <ul class="comanda-items">${itemsHtml || '<li style="color:#999; text-align:center;">Sin productos</li>'}</ul>
+                    <div class="comanda-total">Total: $${total}</div>
+                    <div class="comanda-actions">
+                        <button class="btn-editar" onclick="editarComanda(${comanda.folio})">✏️ Editar</button>
+                        <button class="btn-cobrar" onclick="cobrarComanda(${comanda.folio})">💰 Cobrar</button>
+                        <button class="btn-eliminar" onclick="eliminarComanda(${comanda.folio})">🗑️</button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function renderProductosModal() {
+            const grid = document.getElementById('productosModalGrid');
+            grid.innerHTML = '';
+
+            productos.forEach((prod, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'producto-modal-btn';
+                
+                let nombreMostrar = prod.nombre;
+                if (prod.descripcion) {
+                    nombreMostrar += ' ' + prod.descripcion;
+                }
+                
+                btn.innerHTML = `
+                    <div>${nombreMostrar}</div>
+                    <div class="precio">$${prod.precio}</div>
+                `;
+                
+                btn.addEventListener('click', () => {
+                    if (prod.tipo === 'bebida') {
+                        // Bebidas se agregan directo
+                        itemsTemp.push({
+                            nombre: prod.nombre,
+                            precio: prod.precio
+                        });
+                        renderItemsTemp();
+                    } else {
+                        productoSeleccionado = prod;
+                        guisadoSeleccionado = null;
+                        complementosSeleccionados = [];
+                        renderGuisadosModal();
+                        renderComplementosModal();
+                    }
+                });
+                
+                grid.appendChild(btn);
+            });
+        }
+
+        function renderGuisadosModal() {
+            const grid = document.getElementById('guisadosModalGrid');
+            grid.innerHTML = '';
+
+            if (!productoSeleccionado) {
+                grid.innerHTML = '<p style="grid-column: span 3; color:#999;">Selecciona un producto</p>';
+                return;
+            }
+
+            const esCarne = productoSeleccionado.tipo === 'carne';
+            const guisadosFiltrados = esCarne 
+                ? guisadosDisponibles.filter(g => g.precio === 10)
+                : guisadosDisponibles.filter(g => g.precio === 0);
+
+            guisadosFiltrados.forEach(guisado => {
+                const btn = document.createElement('div');
+                btn.className = `guisado-modal-btn ${guisadoSeleccionado?.nombre === guisado.nombre ? 'selected' : ''}`;
+                btn.textContent = guisado.nombre;
+                
+                btn.addEventListener('click', () => {
+                    guisadoSeleccionado = guisado;
+                    renderGuisadosModal();
+                });
+                
+                grid.appendChild(btn);
+            });
+        }
+
+        function renderComplementosModal() {
+            const grid = document.getElementById('complementosModalGrid');
+            grid.innerHTML = '';
+
+            if (!productoSeleccionado) {
+                grid.innerHTML = '<p style="grid-column: span 3; color:#999;">Selecciona un producto</p>';
+                return;
+            }
+
+            let complementos = [];
+            const nombreProducto = productoSeleccionado.nombre;
+            
+            if (nombreProducto.includes('Quesadilla')) {
+                complementos = complementosPorProducto.Quesadilla;
+            } else if (nombreProducto.includes('Gordita')) {
+                complementos = complementosPorProducto.Gordita;
+            } else if (nombreProducto.includes('Huarache')) {
+                complementos = complementosPorProducto.Huarache;
+            } else if (nombreProducto.includes('Tostada')) {
+                complementos = complementosPorProducto.Tostada;
+            } else if (nombreProducto.includes('Pambazo')) {
+                complementos = complementosPorProducto.Pambazo;
+            } else if (nombreProducto.includes('Taco')) {
+                complementos = complementosPorProducto.Taco;
+            } else if (nombreProducto.includes('Sope')) {
+                complementos = complementosPorProducto.Sope;
+            }
+
+            complementos.forEach(comp => {
+                const div = document.createElement('div');
+                div.className = 'complemento-modal-item';
+                div.innerHTML = `
+                    <input type="checkbox" class="comp-check" ${complementosSeleccionados.includes(comp) ? 'checked' : ''}>
+                    <span>${comp}</span>
+                `;
+                
+                div.querySelector('input').addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        complementosSeleccionados.push(comp);
+                    } else {
+                        complementosSeleccionados = complementosSeleccionados.filter(c => c !== comp);
+                    }
+                });
+                
+                grid.appendChild(div);
+            });
+        }
+
+        function renderItemsTemp() {
+            const lista = document.getElementById('itemsTempList');
+            const totalSpan = document.getElementById('itemsTempTotal');
+            
+            if (itemsTemp.length === 0) {
+                lista.innerHTML = '<li style="color:#999; text-align:center; padding:1rem;">No hay items agregados</li>';
+                totalSpan.textContent = 'Total: $0';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            itemsTemp.forEach((item, idx) => {
+                total += item.precio;
+                html += `
+                    <li style="display:flex; justify-content:space-between; padding:0.5rem; border-bottom:1px solid #e2e8f0;">
+                        <span>${item.nombre}</span>
+                        <span>
+                            $${item.precio}
+                            <button style="background:#e53e3e; border:none; color:white; width:24px; height:24px; border-radius:50%; margin-left:0.5rem; cursor:pointer;" onclick="eliminarItemTemp(${idx})">✕</button>
+                        </span>
+                    </li>
+                `;
+            });
+            lista.innerHTML = html;
+            totalSpan.textContent = `Total: $${total}`;
+        }
+
+        window.eliminarItemTemp = (idx) => {
+            itemsTemp.splice(idx, 1);
+            renderItemsTemp();
+        };
+
+        // ========== FUNCIONES DEL MODAL ==========
+        function abrirModal(comanda = null) {
+            modalActivo = true;
+            itemsTemp = comanda ? [...comanda.items] : [];
+            comandaEnEdicion = comanda ? comanda.folio : null;
+            
+            document.getElementById('modalTitulo').textContent = comanda ? `Editar Comanda F-${String(comanda.folio).padStart(3, '0')}` : 'Nueva Comanda';
+            document.getElementById('clienteInput').value = comanda ? comanda.cliente || '' : '';
+            
+            productoSeleccionado = null;
+            guisadoSeleccionado = null;
+            complementosSeleccionados = [];
+            cantidadSeleccionada = 1;
+            document.getElementById('modalCantidad').textContent = '1';
+            
+            renderProductosModal();
+            renderGuisadosModal();
+            renderComplementosModal();
+            renderItemsTemp();
+            
+            document.getElementById('comandaModal').classList.add('show');
+        }
+
+        function cerrarModal() {
+            modalActivo = false;
+            document.getElementById('comandaModal').classList.remove('show');
+        }
+
+        // ========== EVENTOS DEL MODAL ==========
+        document.getElementById('btnNuevaComanda').addEventListener('click', () => abrirModal());
+
+        document.getElementById('cerrarModal').addEventListener('click', cerrarModal);
+        document.getElementById('cancelarModal').addEventListener('click', cerrarModal);
+
+        document.getElementById('modalCantidadMas').addEventListener('click', () => {
+            cantidadSeleccionada++;
+            document.getElementById('modalCantidad').textContent = cantidadSeleccionada;
+        });
+
+        document.getElementById('modalCantidadMenos').addEventListener('click', () => {
+            if (cantidadSeleccionada > 1) {
+                cantidadSeleccionada--;
+                document.getElementById('modalCantidad').textContent = cantidadSeleccionada;
+            }
+        });
+
+        document.getElementById('agregarItemModal').addEventListener('click', () => {
+            if (!productoSeleccionado) {
+                alert('Selecciona un producto');
+                return;
+            }
+
+            if (productoSeleccionado.tipo === 'bebida') {
+                // Ya se maneja directo
+                return;
+            }
+
+            if (!guisadoSeleccionado) {
+                alert('Selecciona un guisado');
+                return;
+            }
+
+            const complementos = [];
+            document.querySelectorAll('.comp-check:checked').forEach(cb => {
+                complementos.push(cb.nextElementSibling.textContent);
+            });
+
+            const complementosStr = complementos.length ? ' con ' + complementos.join(', ') : '';
+
+            for (let i = 0; i < cantidadSeleccionada; i++) {
+                let nombre = productoSeleccionado.nombre;
+                if (productoSeleccionado.descripcion) {
+                    nombre += ' ' + productoSeleccionado.descripcion;
+                }
+                nombre += ` de ${guisadoSeleccionado.nombre}${complementosStr}`;
+
+                itemsTemp.push({
+                    nombre: nombre,
+                    precio: productoSeleccionado.precio + (guisadoSeleccionado.precio || 0)
+                });
+            }
+
+            // Limpiar selección
+            productoSeleccionado = null;
+            guisadoSeleccionado = null;
+            complementosSeleccionados = [];
+            cantidadSeleccionada = 1;
+            document.getElementById('modalCantidad').textContent = '1';
+
+            renderProductosModal();
+            renderGuisadosModal();
+            renderComplementosModal();
+            renderItemsTemp();
+        });
+
+        document.getElementById('guardarComanda').addEventListener('click', () => {
+            if (itemsTemp.length === 0) {
+                alert('Agrega al menos un producto a la comanda');
+                return;
+            }
+
+            const cliente = document.getElementById('clienteInput').value.trim();
+
+            if (comandaEnEdicion) {
+                // Editar comanda existente
+                const comanda = comandas.find(c => c.folio === comandaEnEdicion);
+                if (comanda) {
+                    comanda.cliente = cliente;
+                    comanda.items = [...itemsTemp];
+                }
+            } else {
+                // Nueva comanda
+                comandas.push({
+                    folio: contadorFolio++,
+                    cliente: cliente,
+                    items: [...itemsTemp],
+                    estado: 'activa'
+                });
+            }
+
+            renderComandas();
+            cerrarModal();
+        });
+
+        // ========== FUNCIONES DE COMANDAS (globales) ==========
+        window.editarComanda = (folio) => {
+            const comanda = comandas.find(c => c.folio === folio);
+            if (comanda) abrirModal(comanda);
+        };
+
+        window.cobrarComanda = (folio) => {
+            const comanda = comandas.find(c => c.folio === folio);
+            if (!comanda) return;
+            
+            const total = comanda.items.reduce((acc, item) => acc + item.precio, 0);
+            const confirmar = confirm(`Total a cobrar: $${total}\n¿Marcar como pagada?`);
+            
+            if (confirmar) {
+                comandas = comandas.filter(c => c.folio !== folio);
+                renderComandas();
+            }
+        };
+
+        window.eliminarComanda = (folio) => {
+            if (confirm('¿Eliminar esta comanda?')) {
+                comandas = comandas.filter(c => c.folio !== folio);
+                renderComandas();
+            }
+        };
+
+        // ========== ADMIN ==========
+        const modal = document.getElementById('passwordModal');
+        const adminBtn = document.getElementById('adminToggleBtn');
+        
+        adminBtn.addEventListener('click', () => {
+            if (adminActivo) {
+                adminActivo = false;
+                alert('Modo administrador desactivado');
+            } else {
+                modal.classList.add('show');
+            }
+        });
+
+        document.getElementById('submitPassword').addEventListener('click', () => {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === 'Elvialogar') {
+                modal.classList.remove('show');
+                adminActivo = true;
+                alert('Modo administrador activado');
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        });
+
+        document.getElementById('cancelPassword').addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        // ========== INICIALIZACIÓN ==========
+        renderComandas();
+    })();
+</script>
+</body>
+</html>
