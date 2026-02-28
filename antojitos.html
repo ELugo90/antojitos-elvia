@@ -182,6 +182,11 @@
             gap: 0.5rem;
             align-items: center;
         }
+        .propina-input-group span.peso-sign {
+            font-weight: 600;
+            color: #e53e3e;
+            margin-right: 0.25rem;
+        }
         .propina-input-group input {
             flex: 1;
             padding: 0.5rem;
@@ -193,7 +198,7 @@
             color: #a0aec0;
             font-style: italic;
         }
-        .propina-input-group span {
+        .propina-input-group span.mxn {
             font-weight: 600;
             color: #4a5568;
         }
@@ -551,64 +556,88 @@
             font-size: 1.1rem;
         }
 
-        /* Modal de complementos */
-        .complementos-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
+        /* Grid de guisados */
+        .guisados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        .guisado-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
             align-items: center;
         }
-        .complementos-modal.show {
-            display: flex;
-        }
-        .complementos-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 24px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .complementos-content h3 {
-            font-size: 1.3rem;
+        .guisado-nombre {
+            font-weight: 600;
+            font-size: 0.95rem;
             color: #1a1a1a;
-            margin-bottom: 1rem;
+        }
+        .guisado-precio {
+            color: #e53e3e;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .btn-seleccionar-guisado {
+            background: #e53e3e;
+            border: none;
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Complementos */
+        .personalizacion-section {
+            margin-top: 0.8rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 20px;
+            border: 2px solid #e2e8f0;
+        }
+        .complementos-gratis h3 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
         }
         .complementos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 0.8rem;
-            margin: 1.5rem 0;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
-        .complemento-item {
+        .complemento-item-gratis {
             background: #f8fafc;
             border: 2px solid #e2e8f0;
             border-radius: 30px;
-            padding: 0.6rem;
+            padding: 0.4rem 0.6rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
             cursor: pointer;
+            font-size: 0.85rem;
         }
-        .complemento-item input {
-            width: 1rem;
-            height: 1rem;
+        .complemento-item-gratis input {
+            width: 0.9rem;
+            height: 0.9rem;
             accent-color: #e53e3e;
         }
-        .complemento-item span {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
+
         .cantidad-selector {
             display: flex;
             align-items: center;
             gap: 1rem;
             margin: 1.5rem 0;
+            justify-content: center;
         }
         .cantidad-selector button {
             width: 40px;
@@ -627,6 +656,31 @@
             text-align: center;
         }
 
+        .btn-principal {
+            background: #e53e3e;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.8rem;
+            border-radius: 40px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .btn-secundario {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.6rem;
+            border-radius: 40px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
         footer {
             text-align: center;
             color: #718096;
@@ -634,12 +688,11 @@
             font-size: 0.8rem;
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .header {
                 padding: 0.6rem 1rem;
             }
-            .productos-grid {
+            .productos-grid, .guisados-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -673,25 +726,6 @@
         </div>
     </div>
 
-    <!-- Modal de complementos -->
-    <div id="complementosModal" class="complementos-modal">
-        <div class="complementos-content">
-            <h3 id="complementosTitle">Personaliza tu pedido</h3>
-            <div id="complementosContainer" class="complementos-grid"></div>
-            
-            <div class="cantidad-selector">
-                <button id="cantidadMenos">-</button>
-                <span id="cantidadValue">1</span>
-                <button id="cantidadMas">+</button>
-            </div>
-            
-            <div class="cart-modal-buttons">
-                <button id="agregarAlCarrito">Agregar al carrito</button>
-                <button id="cerrarComplementos">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal del carrito -->
     <div id="cartModal" class="cart-modal">
         <div class="cart-modal-content">
@@ -704,10 +738,10 @@
                     <label>💝 Propina</label>
                 </div>
                 <div class="propina-input-group">
-    <span style="font-weight:600; color:#e53e3e; margin-right:0.25rem;">$</span>
-    <input type="number" id="propinaInput" placeholder="10% sugerido" min="0" step="10" style="flex:1;">
-    <span>MXN</span>
-</div>
+                    <span class="peso-sign">$</span>
+                    <input type="number" id="propinaInput" placeholder="10% sugerido" min="0" step="10">
+                    <span class="mxn">MXN</span>
+                </div>
             </div>
             
             <div class="cart-modal-total" id="cartModalTotal">Total: $0</div>
@@ -808,10 +842,30 @@
     <!-- Contenido principal -->
     <div class="main-content">
         <div class="flow-section">
-            <!-- Pantalla única: Productos -->
+            <!-- Pantalla 1: Productos -->
             <div id="screenMenu" class="screen active">
                 <h2>¿Qué se te antoja? 🌮</h2>
                 <div class="productos-grid" id="productosGrid"></div>
+            </div>
+
+            <!-- Pantalla 2: Guisados -->
+            <div id="screenGuisados" class="screen">
+                <h2>Elige guisado</h2>
+                <div id="guisadosContainer" class="guisados-grid"></div>
+                <button class="btn-secundario" id="volverAlMenu">← Volver al menú</button>
+            </div>
+
+            <!-- Pantalla 3: Complementos -->
+            <div id="screenComplementos" class="screen">
+                <h2 id="complementosTitle">Personaliza tu pedido</h2>
+                <div id="complementosContainer" class="personalizacion-section"></div>
+                <div class="cantidad-selector">
+                    <button id="cantidadMenos">-</button>
+                    <span id="cantidadValue">1</span>
+                    <button id="cantidadMas">+</button>
+                </div>
+                <button class="btn-principal" id="agregarAlCarrito">➕ Agregar al carrito</button>
+                <button class="btn-secundario" id="volverAGuisados">← Volver a guisados</button>
             </div>
         </div>
     </div>
@@ -831,44 +885,55 @@
             'Sope': ['Lechuga', 'Queso', 'Crema', 'Cebolla', 'Cilantro', 'Salsa verde', 'Salsa roja']
         };
 
-        // Productos ordenados alfabéticamente (excepto bebidas al final)
+        const guisadosDisponibles = [
+            { nombre: "Tinga de pollo", precio: 0 },
+            { nombre: "Tinga de res", precio: 0 },
+            { nombre: "Chicharrón", precio: 0 },
+            { nombre: "Picadillo", precio: 0 },
+            { nombre: "Pollo a la mexicana", precio: 0 },
+            { nombre: "Pancita a la mexicana", precio: 0 },
+            { nombre: "Rajas con queso", precio: 0 },
+            { nombre: "Papa con queso", precio: 0 },
+            { nombre: "Champiñones", precio: 0 },
+            { nombre: "Huitlacoche", precio: 0 },
+
+
+
+            { nombre: "Suadero", precio: 0 },
+            { nombre: "Bisteck", precio: 0 },
+            { nombre: "Longaniza", precio: 0 },
+            { nombre: "Campechano", precio: 0 }
+        ];
+
+        // Productos ordenados alfabéticamente
         let productos = [
-            // Gorditas
             { nombre: 'Gordita', precio: 40, tipo: 'carne', descripcion: 'c/Carne' },
             { nombre: 'Gordita', precio: 30, tipo: 'guisado', descripcion: 'c/Guisado' },
-            
-            // Huaraches
             { nombre: 'Huarache', precio: 70, tipo: 'carne', descripcion: 'c/Carne' },
             { nombre: 'Huarache', precio: 60, tipo: 'guisado', descripcion: 'c/Guisado' },
             { nombre: 'Huarache', precio: 45, tipo: 'sencillo', descripcion: 'Sencillo' },
-            
-            // Pambazo
             { nombre: 'Pambazo', precio: 30, tipo: 'normal' },
-            
-            // Quesadilla
             { nombre: 'Quesadilla', precio: 30, tipo: 'normal' },
-            
-            // Sopes
             { nombre: 'Sope', precio: 40, tipo: 'carne', descripcion: 'c/Carne' },
             { nombre: 'Sope', precio: 30, tipo: 'guisado', descripcion: 'c/Guisado' },
-            
-            // Tacos
             { nombre: 'Taco', precio: 30, tipo: 'normal' },
-            
-            // Tostada
             { nombre: 'Tostada', precio: 30, tipo: 'normal' },
-            
-            // Bebidas (siempre al final)
             { nombre: 'Coca-Cola 500ml', precio: 28, tipo: 'bebida' },
             { nombre: 'Jarrito 600ml', precio: 23, tipo: 'bebida' }
         ];
 
         let carrito = [];
         let productoSeleccionado = null;
+        let guisadoSeleccionado = null;
         let cantidadSeleccionada = 1;
         let adminActivo = false;
 
-        // ========== FUNCIONES ==========
+        // ========== FUNCIONES DE PANTALLA ==========
+        function mostrarPantalla(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
         function renderProductos() {
             const grid = document.getElementById('productosGrid');
             grid.innerHTML = '';
@@ -881,10 +946,6 @@
                 let nombreMostrar = prod.nombre;
                 if (prod.descripcion) {
                     nombreMostrar += ' ' + prod.descripcion;
-                } else if (prod.tipo === 'carne') {
-                    nombreMostrar += ' c/Carne';
-                } else if (prod.tipo === 'guisado') {
-                    nombreMostrar += ' c/Guisado';
                 }
                 
                 card.innerHTML = `
@@ -894,20 +955,14 @@
                 
                 card.addEventListener('click', () => {
                     if (prod.tipo === 'bebida') {
-                        // Las bebidas se agregan directo
-                        for (let i = 0; i < cantidadSeleccionada; i++) {
-                            carrito.push({ 
-                                nombre: prod.nombre, 
-                                precio: prod.precio 
-                            });
-                        }
+                        carrito.push({ 
+                            nombre: prod.nombre, 
+                            precio: prod.precio 
+                        });
                         updateCartCount();
                     } else {
-                        // Abrir modal de complementos
                         productoSeleccionado = prod;
-                        cantidadSeleccionada = 1;
-                        document.getElementById('cantidadValue').textContent = '1';
-                        abrirComplementos(prod.nombre);
+                        mostrarPantallaGuisados();
                     }
                 });
                 
@@ -915,12 +970,57 @@
             });
         }
 
-        function abrirComplementos(nombreProducto) {
+        function mostrarPantallaGuisados() {
+            if (!productoSeleccionado) return;
+            
+            const container = document.getElementById('guisadosContainer');
+            const esCarne = productoSeleccionado.tipo === 'carne';
+            
+            const guisadosFiltrados = esCarne 
+                ? guisadosDisponibles.filter(g => ['Suadero', 'Bisteck', 'Longaniza', 'Campechano'].includes(g.nombre))
+                : guisadosDisponibles.filter(g => ['Tinga de pollo', 'Tinga de res', 'Chicharrón', 'Picadillo', 'Pollo a la mexicana', 'Pancita a la mexicana', 'Rajas con queso', 'Picadillo',, 'Papas con queso', 'Champiñones', 'Huitlacoche'].includes(g.nombre));
+            
+
+
+
+            let html = '';
+            guisadosFiltrados.forEach((guisado, index) => {
+                html += `
+                    <div class="guisado-card" data-nombre="${guisado.nombre}" data-precio="${guisado.precio}">
+                        <span class="guisado-nombre">${guisado.nombre}</span>
+                        ${guisado.precio > 0 ? `<span class="guisado-precio">+$${guisado.precio}</span>` : ''}
+                        <button class="btn-seleccionar-guisado">Seleccionar</button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            document.querySelectorAll('.btn-seleccionar-guisado').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const card = e.target.closest('.guisado-card');
+                    const nombre = card.dataset.nombre;
+                    const precioExtra = parseFloat(card.dataset.precio) || 0;
+                    
+                    guisadoSeleccionado = { nombre, precioExtra };
+                    mostrarPantallaComplementos();
+                });
+            });
+            
+            mostrarPantalla('screenGuisados');
+        }
+
+        function mostrarPantallaComplementos() {
+            if (!productoSeleccionado || !guisadoSeleccionado) return;
+            
             const container = document.getElementById('complementosContainer');
             const title = document.getElementById('complementosTitle');
             
-            // Obtener complementos específicos del producto
+            title.textContent = `Personaliza tu ${productoSeleccionado.nombre} con ${guisadoSeleccionado.nombre}`;
+            
             let complementos = [];
+            const nombreProducto = productoSeleccionado.nombre;
+            
             if (nombreProducto.includes('Quesadilla')) {
                 complementos = complementosPorProducto.Quesadilla;
             } else if (nombreProducto.includes('Gordita')) {
@@ -937,21 +1037,39 @@
                 complementos = complementosPorProducto.Sope;
             }
             
-            title.textContent = `Personaliza tu ${nombreProducto}`;
+            let html = `
+                <div class="complementos-gratis">
+                    <h3>🌿 Complementos</h3>
+                    <div class="complementos-grid">
+            `;
             
-            container.innerHTML = '';
             complementos.forEach(comp => {
-                const label = document.createElement('label');
-                label.className = 'complemento-item';
-                label.innerHTML = `
-                    <input type="checkbox" class="complemento-check" checked>
-                    <span>${comp}</span>
+                html += `
+                    <label class="complemento-item-gratis">
+                        <input type="checkbox" class="comp-gratis" checked>
+                        <span>${comp}</span>
+                    </label>
                 `;
-                container.appendChild(label);
             });
             
-            document.getElementById('complementosModal').classList.add('show');
+            html += `</div></div>`;
+            container.innerHTML = html;
+            
+            cantidadSeleccionada = 1;
+            document.getElementById('cantidadValue').textContent = '1';
+            
+            mostrarPantalla('screenComplementos');
         }
+
+        // Eventos de navegación
+        document.getElementById('volverAlMenu').addEventListener('click', () => {
+            productoSeleccionado = null;
+            mostrarPantalla('screenMenu');
+        });
+
+        document.getElementById('volverAGuisados').addEventListener('click', () => {
+            mostrarPantallaGuisados();
+        });
 
         // Eventos de cantidad
         document.getElementById('cantidadMas').addEventListener('click', () => {
@@ -966,11 +1084,12 @@
             }
         });
 
+        // Agregar al carrito
         document.getElementById('agregarAlCarrito').addEventListener('click', () => {
-            if (!productoSeleccionado) return;
+            if (!productoSeleccionado || !guisadoSeleccionado) return;
 
             const complementos = [];
-            document.querySelectorAll('.complemento-check:checked').forEach(cb => {
+            document.querySelectorAll('.comp-gratis:checked').forEach(cb => {
                 complementos.push(cb.nextElementSibling.textContent);
             });
 
@@ -980,27 +1099,19 @@
                 let nombre = productoSeleccionado.nombre;
                 if (productoSeleccionado.descripcion) {
                     nombre += ' ' + productoSeleccionado.descripcion;
-                } else if (productoSeleccionado.tipo === 'carne') {
-                    nombre += ' c/Carne';
-                } else if (productoSeleccionado.tipo === 'guisado') {
-                    nombre += ' c/Guisado';
                 }
-                nombre += complementosStr;
+                nombre += ` de ${guisadoSeleccionado.nombre}${complementosStr}`;
                 
                 carrito.push({
                     nombre: nombre,
-                    precio: productoSeleccionado.precio
+                    precio: productoSeleccionado.precio + guisadoSeleccionado.precioExtra
                 });
             }
 
             updateCartCount();
-            document.getElementById('complementosModal').classList.remove('show');
             productoSeleccionado = null;
-        });
-
-        document.getElementById('cerrarComplementos').addEventListener('click', () => {
-            document.getElementById('complementosModal').classList.remove('show');
-            productoSeleccionado = null;
+            guisadoSeleccionado = null;
+            mostrarPantalla('screenMenu');
         });
 
         function updateCartCount() {
@@ -1019,37 +1130,33 @@
         }
 
         function calcularPropina() {
-    const valor = propinaInput.value;
-    
-    // Si el usuario escribió algo, usar ese valor
-    if (valor !== '' && !isNaN(parseFloat(valor))) {
-        return parseFloat(valor);
-    }
-    
-    // Si está vacío, calcular 10% del subtotal
-    const subtotal = calcularSubtotal();
-    const diezPorciento = Math.round(subtotal * 0.1);
-    
-    // Mostrar el 10% como placeholder pero NO agregarlo al total
-    propinaInput.placeholder = `$${diezPorciento} (10%)`;
-    return 0; // Importante: retornar 0 cuando está vacío
-}
+            const valor = propinaInput.value;
+            
+            if (valor !== '' && !isNaN(parseFloat(valor))) {
+                return parseFloat(valor);
+            }
+            
+            const subtotal = calcularSubtotal();
+            const diezPorciento = Math.round(subtotal * 0.1);
+            propinaInput.placeholder = `$${diezPorciento} (10%)`;
+            return 0;
+        }
 
         function calcularTotal() {
             return calcularSubtotal() + calcularPropina();
         }
 
         function actualizarTotalYCambio() {
-    const subtotal = calcularSubtotal();
-    const propina = calcularPropina();
-    const total = subtotal + propina;
-    
-    document.getElementById('cartModalTotal').textContent = `Total: $${total}`;
-    
-    const pago = parseFloat(pagoInput.value) || 0;
-    const cambio = pago - total;
-    cambioInfo.textContent = `Cambio: $${cambio >= 0 ? cambio : 0}`;
-}
+            const subtotal = calcularSubtotal();
+            const propina = calcularPropina();
+            const total = subtotal + propina;
+            
+            document.getElementById('cartModalTotal').textContent = `Total: $${total}`;
+            
+            const pago = parseFloat(pagoInput.value) || 0;
+            const cambio = pago - total;
+            cambioInfo.textContent = `Cambio: $${cambio >= 0 ? cambio : 0}`;
+        }
 
         function renderCartModal() {
             const itemsList = document.getElementById('cartModalItems');
@@ -1243,9 +1350,8 @@
 
             const compList = document.getElementById('complementosAdminList');
             compList.innerHTML = '';
-            // Mostrar complementos agrupados por producto
             for (let [producto, comps] of Object.entries(complementosPorProducto)) {
-                comps.forEach((comp, idx) => {
+                comps.forEach(comp => {
                     compList.innerHTML += `
                         <div class="admin-item">
                             <label>${producto}: ${comp}</label>
